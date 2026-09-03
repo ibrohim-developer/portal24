@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 
-import {
-  isLocale,
-  locales,
-  localeHrefLang,
-  type Locale,
-} from "@/i18n/config";
+import { isLocale, locales, localeHrefLang, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { portalFont } from "@/lib/fonts";
 import "../globals.css";
-
-// Cyrillic is not optional here - without it every Russian page falls back to
-// a system font and the design breaks.
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext", "cyrillic"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin", "latin-ext", "cyrillic"],
-});
 
 /** Prerender exactly these three locales... */
 export function generateStaticParams() {
@@ -76,9 +59,9 @@ export default async function LocaleLayout({
   return (
     <html
       lang={localeHrefLang[locale as Locale]}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${portalFont.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

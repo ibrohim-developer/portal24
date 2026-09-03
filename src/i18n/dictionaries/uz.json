@@ -1,29 +1,42 @@
 {
   "site": {
     "name": "Portal24",
-    "tagline": "Kunning eng muhim yangiliklari"
+    "tagline": "Oʻzbekistonning asosiy yangiliklari"
   },
   "nav": {
-    "home": "Bosh sahifa",
-    "politics": "Siyosat",
-    "economy": "Iqtisodiyot",
-    "society": "Jamiyat",
-    "sport": "Sport",
-    "world": "Dunyo",
-    "search": "Qidirish"
-  },
-  "common": {
-    "readMore": "Batafsil",
-    "latest": "So'nggi yangiliklar",
     "popular": "Ommabop",
-    "language": "Til",
-    "publishedAt": "Chop etilgan",
-    "allNews": "Barcha yangiliklar"
+    "sport": "Sport",
+    "eco": "Ekologiya",
+    "education": "Taʼlim",
+    "finance": "Moliya",
+    "tech": "Texnologiya",
+    "about": "Biz haqimizda",
+    "telegram": "Telegram",
+    "search": "Qidirish",
+    "menu": "Menyu",
+    "close": "Yopish"
+  },
+  "sections": {
+    "fresh": "Soʻnggi yangiliklar",
+    "popular": "#Ommabop",
+    "numberOfDay": "Kun raqami",
+    "recentNumbers": "Soʻnggi kunlar raqamlari",
+    "seeAll": "Barchasini koʻrish",
+    "read": "Oʻqish"
   },
   "footer": {
-    "about": "Biz haqimizda",
-    "contacts": "Aloqa",
-    "advertising": "Reklama",
-    "rights": "Barcha huquqlar himoyalangan."
+    "sectionsTitle": "Boʻlimlar",
+    "editorialTitle": "Tahririyat",
+    "aboutPublication": "Nashr haqida",
+    "mediaKit": "Mediakitni yuklab olish",
+    "socialTitle": "Ijtimoiy tarmoqlarda",
+    "legal": "PORTAL24 — зарегистрировано в Агентстве информации и массовых коммуникаций при Администрации Президента Республики Узбекистан. Свидетельство о регистрации интернет-СМИ №2588770 от 02.10.2024",
+    "founder": "Учредитель: «AXBOROT MEDIA» MCHJ. Главный редактор: Кадамов Жавохир Азизбекович"
+  },
+  "a11y": {
+    "home": "Portal24 — bosh sahifaga",
+    "mainNav": "Asosiy navigatsiya",
+    "languages": "Tilni tanlash",
+    "advertising": "Reklama"
   }
 }

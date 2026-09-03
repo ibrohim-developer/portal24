@@ -1,29 +1,42 @@
 {
   "site": {
     "name": "Portal24",
-    "tagline": "The day's most important news"
+    "tagline": "Uzbekistan's leading news"
   },
   "nav": {
-    "home": "Home",
-    "politics": "Politics",
-    "economy": "Economy",
-    "society": "Society",
-    "sport": "Sport",
-    "world": "World",
-    "search": "Search"
-  },
-  "common": {
-    "readMore": "Read more",
-    "latest": "Latest news",
     "popular": "Popular",
-    "language": "Language",
-    "publishedAt": "Published",
-    "allNews": "All news"
+    "sport": "Sport",
+    "eco": "Ecology",
+    "education": "Education",
+    "finance": "Finance",
+    "tech": "Technology",
+    "about": "About us",
+    "telegram": "Telegram",
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "sections": {
+    "fresh": "Latest news",
+    "popular": "#Popular",
+    "numberOfDay": "Number of the day",
+    "recentNumbers": "Recent figures",
+    "seeAll": "See all",
+    "read": "Read"
   },
   "footer": {
-    "about": "About us",
-    "contacts": "Contacts",
-    "advertising": "Advertising",
-    "rights": "All rights reserved."
+    "sectionsTitle": "Sections",
+    "editorialTitle": "Editorial",
+    "aboutPublication": "About the publication",
+    "mediaKit": "Download media kit",
+    "socialTitle": "Follow us",
+    "legal": "PORTAL24 — зарегистрировано в Агентстве информации и массовых коммуникаций при Администрации Президента Республики Узбекистан. Свидетельство о регистрации интернет-СМИ №2588770 от 02.10.2024",
+    "founder": "Учредитель: «AXBOROT MEDIA» MCHJ. Главный редактор: Кадамов Жавохир Азизбекович"
+  },
+  "a11y": {
+    "home": "Portal24 — go to homepage",
+    "mainNav": "Main navigation",
+    "languages": "Choose language",
+    "advertising": "Advertising"
   }
 }
