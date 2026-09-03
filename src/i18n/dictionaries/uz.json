@@ -1,0 +1,29 @@
+{
+  "site": {
+    "name": "Portal24",
+    "tagline": "Kunning eng muhim yangiliklari"
+  },
+  "nav": {
+    "home": "Bosh sahifa",
+    "politics": "Siyosat",
+    "economy": "Iqtisodiyot",
+    "society": "Jamiyat",
+    "sport": "Sport",
+    "world": "Dunyo",
+    "search": "Qidirish"
+  },
+  "common": {
+    "readMore": "Batafsil",
+    "latest": "So'nggi yangiliklar",
+    "popular": "Ommabop",
+    "language": "Til",
+    "publishedAt": "Chop etilgan",
+    "allNews": "Barcha yangiliklar"
+  },
+  "footer": {
+    "about": "Biz haqimizda",
+    "contacts": "Aloqa",
+    "advertising": "Reklama",
+    "rights": "Barcha huquqlar himoyalangan."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "site": {
+    "name": "Portal24",
+    "tagline": "Главные новости дня"
+  },
+  "nav": {
+    "home": "Главная",
+    "politics": "Политика",
+    "economy": "Экономика",
+    "society": "Общество",
+    "sport": "Спорт",
+    "world": "Мир",
+    "search": "Поиск"
+  },
+  "common": {
+    "readMore": "Подробнее",
+    "latest": "Последние новости",
+    "popular": "Популярное",
+    "language": "Язык",
+    "publishedAt": "Опубликовано",
+    "allNews": "Все новости"
+  },
+  "footer": {
+    "about": "О нас",
+    "contacts": "Контакты",
+    "advertising": "Реклама",
+    "rights": "Все права защищены."
+  }
+}

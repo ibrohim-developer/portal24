@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <title>Portal24</title>
+    <!-- Static export has no middleware, so locale routing for "/" happens here.
+         Prefer the nginx redirect in deploy/nginx.conf when it is available -
+         a real 302 is faster and cleaner for crawlers than a meta refresh. -->
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="/uz/" />
+    <meta http-equiv="refresh" content="0; url=/uz/" />
+    <script>
+      (function () {
+        var supported = ["uz", "ru", "en"];
+        var langs = navigator.languages || [navigator.language || "uz"];
+        for (var i = 0; i < langs.length; i++) {
+          var code = String(langs[i]).slice(0, 2).toLowerCase();
+          if (supported.indexOf(code) !== -1) {
+            location.replace("/" + code + "/");
+            return;
+          }
+        }
+        location.replace("/uz/");
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="/uz/">Portal24</a>
+  </body>
+</html>

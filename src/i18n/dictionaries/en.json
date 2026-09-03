@@ -1,0 +1,29 @@
+{
+  "site": {
+    "name": "Portal24",
+    "tagline": "The day's most important news"
+  },
+  "nav": {
+    "home": "Home",
+    "politics": "Politics",
+    "economy": "Economy",
+    "society": "Society",
+    "sport": "Sport",
+    "world": "World",
+    "search": "Search"
+  },
+  "common": {
+    "readMore": "Read more",
+    "latest": "Latest news",
+    "popular": "Popular",
+    "language": "Language",
+    "publishedAt": "Published",
+    "allNews": "All news"
+  },
+  "footer": {
+    "about": "About us",
+    "contacts": "Contacts",
+    "advertising": "Advertising",
+    "rights": "All rights reserved."
+  }
+}
