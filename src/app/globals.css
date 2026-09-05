@@ -55,6 +55,76 @@
   --container-side: 300px;
 
   --font-sans: var(--font-portal), ui-sans-serif, system-ui, sans-serif;
+
+  /*
+   * The header's desktop row - six category links, "О нас", three language
+   * codes, the Telegram CTA and the search square - measures 1107px of content
+   * in the widest locale (ru), so it needs a 1267px viewport once the 80px
+   * gutters are paid for. `lg` (1024) is 243px short of that, which is why the
+   * row used to collide with itself there. Below this width the header shows
+   * the mobile row and its burger instead; nothing else switches here.
+   */
+  --breakpoint-nav: 1320px;
+}
+
+/*
+ * Distance from the page edge to the container's content - the same inset
+ * <Container> produces. A full-bleed section pads by this to line its heading
+ * up with every other block on the page while its own box stays full width.
+ *
+ * Percent, not vw: `100vw` counts the scrollbar, so on a desktop with a classic
+ * scrollbar a vw-based inset lands a few pixels right of everything else and
+ * adds a horizontal scrollbar. The percentage resolves against the section's
+ * own full-width box instead, which is what we actually want to measure.
+ *
+ * The two floors are Container's own `px-4 lg:px-20`.
+ */
+:root {
+  --page-inset: max(16px, calc((100% - var(--container-page)) / 2));
+}
+
+@media (width >= 64rem) {
+  :root {
+    --page-inset: max(80px, calc((100% - var(--container-page)) / 2));
+  }
+}
+
+/*
+ * The 960 content column, for blocks that sit inside <Container> without the
+ * rail beside them to size them.
+ *
+ * Written as "container minus the rail" rather than as a flat 960 so it tracks
+ * the column that IS beside the rail at every viewport, not just above 1440
+ * where the container stops growing.
+ */
+@utility w-column {
+  width: calc((100% - var(--spacing-gutter)) * 960 / 1260);
+}
+
+/*
+ * The page's two columns: the 960 content column beside the 300 rail, 20
+ * apart. Applied from `lg` up; below that the two stack.
+ *
+ * Ratios, not `960px 300px`. The container only reaches 1280 at a 1440
+ * viewport; at `lg` (1024) it is 864 wide, so a fixed pair would leave the
+ * content column 544 and every block inside it - all sized off 960 - would
+ * spill out over the rail. Sharing the width by the design's ratio keeps the
+ * proportions at every width and still lands on exactly 960/300 from 1440.
+ *
+ * minmax(0, ...) rather than a bare fr: an fr track floors at min-content, so
+ * one long unbroken headline is otherwise enough to push the track past its
+ * share and the page into horizontal scroll.
+ */
+@utility grid-rail {
+  grid-template-columns: minmax(0, 960fr) minmax(0, 300fr);
+}
+
+/*
+ * The lead arrangement inside that content column: the 633 story beside the
+ * 307 pair. Same reasoning as `grid-rail`.
+ */
+@utility grid-lead {
+  grid-template-columns: minmax(0, 633fr) minmax(0, 307fr);
 }
 
 html {

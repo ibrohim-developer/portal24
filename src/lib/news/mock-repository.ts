@@ -1,6 +1,15 @@
 import type { Locale } from "@/i18n/config";
 import type { NewsRepository } from "./repository";
-import type { Article, CategorySlug, Stat } from "./types";
+import type {
+  Article,
+  ArticleBlock,
+  ArticleDetail,
+  AuthorContact,
+  AuthorProfile,
+  CategorySlug,
+  Highlight,
+  Stat,
+} from "./types";
 
 /*
  * Fixtures standing in for the admin REST API, which does not exist yet.
@@ -49,9 +58,133 @@ const SEEDS: Seed[] = [
   ["eco", "Под Ташкентом выявили факт незаконного использования электроэнергии более чем на 3 млрд сумов"],
   ["education", "Университеты Узбекистана запускают новые международные программы"],
   ["education", "В школах Узбекистана планируют расширить преподавание точных наук"],
+  /*
+   * Below this line the headlines are ours, not the Figma's.
+   *
+   * The design's copy only ever had to fill a main-page block, which shows at
+   * most six stories - #Технологии had two. A category page is a whole feed of
+   * one category, so each one is topped up to nine here: a lead, the two cards
+   * beside it, and two rows of three under the number of the day.
+   *
+   * Appended rather than interleaved. Every other feed slices this list from
+   * the front, so adding to the end leaves the main page's lead story, its
+   * "Свежие новости" rail and its "#Популярное" block exactly as they were.
+   */
+  ["tech", "Операторы связи начали тестирование сетей пятого поколения в крупных городах"],
+  ["sport", "Сборная по дзюдо завоевала четыре медали на этапе Гран-при"],
+  ["eco", "Площадь зеленых насаждений в столице выросла на четверть за три года"],
+  ["finance", "Центральный банк сохранил ключевую ставку без изменений"],
+  ["tech", "IT Park отчитался о рекордном экспорте технологических услуг"],
+  ["education", "Педагогические вузы получат новые лаборатории и учебные центры"],
+  ["eco", "В Приаралье высадили более миллиона саженцев саксаула"],
+  ["sport", "В Ташкенте построят спортивный комплекс на десять тысяч мест"],
+  ["tech", "Разработчики представили голосового помощника на узбекском языке"],
+  ["finance", "Объем переводов через мобильные приложения вырос вдвое за год"],
+  ["eco", "Узбекистан представил план сокращения выбросов до 2030 года"],
+  ["tech", "Отечественные стартапы привлекли рекордный объем инвестиций"],
+  ["sport", "Узбекские борцы завершили сбор перед чемпионатом Азии"],
+  ["finance", "Малый бизнес получит доступ к льготным кредитам на оборудование"],
+  ["tech", "Дата-центры страны переведут на возобновляемые источники энергии"],
+  ["eco", "Раздельный сбор мусора внедрят еще в пяти городах страны"],
+  ["sport", "Школьная футбольная лига охватит все регионы страны в новом сезоне"],
+  ["tech", "Кибербезопасности начнут обучать студентов с первого курса"],
+  ["finance", "Страховой рынок Узбекистана вырос на треть по итогам полугодия"],
+  ["eco", "Ученые оценили состояние горных рек после аномально теплой зимы"],
+  ["sport", "Федерация запускает программу поддержки молодых спортсменов"],
+  ["tech", "Национальную платформу цифровых госуслуг запустят до конца года"],
 ];
 
-const AUTHORS = ["Дилшод Каримов", "Нигора Азизова", "Тимур Юсупов"];
+/*
+ * `categories` is read by the article's AuthorBlock and by the author page;
+ * `role` and `bio` only by the author page.
+ *
+ * Slugs are written out rather than derived from the index, so the URLs the
+ * AuthorBlock links to survive someone reordering this list. Copy is Russian
+ * throughout, as everywhere else in these fixtures - only category names are
+ * localised, because only they come from a real translated source.
+ */
+const AUTHORS: Array<{
+  slug: string;
+  name: string;
+  role: string;
+  bio: string;
+  categories: CategorySlug[];
+  contacts: AuthorContact[];
+}> = [
+  {
+    slug: "dilshod-karimov",
+    name: "Дилшод Каримов",
+    role: "Спортивный обозреватель",
+    bio: "Пишет о национальных сборных, школьном спорте и спортивной инфраструктуре — от бюджетов региональных федераций до того, как школьные секции переживают ремонт стадионов.\n\nДо прихода в редакцию восемь лет работал комментатором на региональном телевидении и вёл репортажи с юношеских первенств.",
+    categories: ["sport", "education"],
+    contacts: [
+      { network: "instagram", href: "https://instagram.com/portal24uz" },
+      { network: "telegram", href: "https://t.me/portal24uz" },
+    ],
+  },
+  {
+    slug: "nigora-azizova",
+    name: "Нигора Азизова",
+    role: "Корреспондент отдела экономики",
+    bio: "Разбирает банковский сектор и экологическую повестку — от качества воздуха в Ташкенте до того, как обе темы сходятся в счетах за электроэнергию.\n\nСобирает мнения отраслевых экспертов и переводит сложные финансовые решения на понятный язык фактов и цифр.",
+    categories: ["eco", "finance"],
+    contacts: [{ network: "telegram", href: "https://t.me/portal24uz" }],
+  },
+  {
+    slug: "timur-yusupov",
+    name: "Тимур Юсупов",
+    role: "Редактор технологического направления",
+    bio: "Следит за телекомом, искусственным интеллектом и цифровыми сервисами банков. Регулярно тестирует новые продукты и разбирает, что за громкими анонсами стоит на самом деле.\n\nВедёт еженедельную рассылку о технологиях в Центральной Азии.",
+    categories: ["tech", "finance"],
+    contacts: [
+      { network: "instagram", href: "https://instagram.com/portal24uz" },
+      { network: "telegram", href: "https://t.me/portal24uz" },
+    ],
+  },
+];
+
+/**
+ * Which author wrote article `index`.
+ *
+ * Assigned by beat rather than round-robin. The author page prints an author's
+ * beats directly above their feed, so a sports correspondent holding a run of
+ * #Финансы stories is visible as wrong the moment the page loads. Where two
+ * authors share a beat the index alternates between them.
+ */
+function authorIndexFor(index: number, category: CategorySlug): number {
+  const matches = AUTHORS.flatMap((author, i) =>
+    author.categories.includes(category) ? [i] : [],
+  );
+  // Every category in SEEDS has an author today; degrade rather than throw if
+  // a future seed introduces one that does not.
+  if (matches.length === 0) return index % AUTHORS.length;
+
+  return matches[index % matches.length];
+}
+
+/** The shape both the AuthorBlock and the author page consume. */
+function buildAuthorProfile(index: number, locale: Locale): AuthorProfile {
+  const author = AUTHORS[index];
+
+  return {
+    slug: author.slug,
+    name: author.name,
+    role: author.role,
+    bio: author.bio,
+    contacts: author.contacts,
+    avatar: {
+      url: "/img/placeholder.svg",
+      alt: author.name,
+      // 2x the 264px the author page draws it at; the AuthorBlock asks for 80.
+      width: 528,
+      height: 528,
+    },
+    categories: author.categories.map((slug) => ({
+      slug,
+      name: CATEGORY_NAMES[slug][locale],
+    })),
+  };
+}
 
 function transliterate(title: string, id: number): string {
   const map: Record<string, string> = {
@@ -87,23 +220,131 @@ function buildArticles(locale: Locale): Article[] {
     },
     // Staggered so the "latest" ordering is meaningful.
     publishedAt: new Date(BASE_TIME - i * 47 * 60 * 1000).toISOString(),
-    author: { slug: `author-${i % AUTHORS.length}`, name: AUTHORS[i % AUTHORS.length] },
+    author: {
+      slug: AUTHORS[authorIndexFor(i, slug)].slug,
+      name: AUTHORS[authorIndexFor(i, slug)].name,
+    },
   }));
 }
 
-const STATS: Array<Omit<Stat, "coverImage" | "href">> = [
+/*
+ * One body, reused by every article.
+ *
+ * The block sequence is the Figma News Page (1852:19332) read top to bottom -
+ * two paragraphs, a section heading, a callout, a full-width portrait photo,
+ * a second callout, a second heading - so the page's spacing rules are all
+ * exercised by whichever fixture you happen to open.
+ *
+ * The first six blocks are the design's own copy; the rest continues it in the
+ * same register, because the Figma frame stops showing legible text below the
+ * fold.
+ */
+const BODY: ArticleBlock[] = [
+  {
+    kind: "paragraph",
+    text: "Самолёт получил уникальную ливрею с символикой национальной команды и стал одним из символов поддержки узбекского футбола.",
+  },
+  {
+    kind: "paragraph",
+    text: "Презентация воздушного судна прошла в Ташкенте. В мероприятии приняли участие представители авиакомпании, Федерации футбола Узбекистана, спортсмены и приглашённые гости.",
+  },
+  { kind: "heading", text: "Символ исторического достижения" },
+  {
+    kind: "paragraph",
+    text: "Появление брендированного самолёта приурочено к одному из самых значимых событий в истории отечественного футбола —",
+  },
+  {
+    kind: "callout",
+    text: "Первому выходу сборной Узбекистана на чемпионат мира.",
+  },
+  {
+    kind: "paragraph",
+    text: "По словам представителей авиакомпании, проект призван подчеркнуть важность этого достижения и выразить поддержку команде перед предстоящим турниром.",
+  },
+  {
+    kind: "image",
+    // 801x1000 in the design - a portrait crop, not the hero's ratio.
+    image: {
+      url: "/img/placeholder.svg",
+      alt: "Ливрея с символикой сборной Узбекистана",
+      width: 801,
+      height: 1000,
+    },
+    caption: "Ливрея с символикой сборной.",
+    credit: "Фото: Portal24",
+  },
+  {
+    kind: "paragraph",
+    text: "Ливрея разрабатывалась несколько месяцев: дизайнеры искали решение, которое останется узнаваемым в аэропорту любой страны.",
+  },
+  {
+    kind: "callout",
+    text: "На борту разместили имена всех игроков, вызванных в национальную сборную в отборочном цикле.",
+  },
+  {
+    kind: "paragraph",
+    text: "Самолёт уже включён в регулярное расписание и будет выполнять рейсы по международным направлениям. Специальную ливрею сохранят как минимум до конца турнира, после чего судьбу оформления определят по итогам сезона. В авиакомпании отметили, что переоформление прошло без вывода борта из эксплуатации.",
+  },
+  {
+    kind: "paragraph",
+    text: "Отдельное внимание уделили салону: пассажирам будут доступны тематические материалы о сборной, а бортовое меню дополнят блюдами национальной кухни.",
+  },
+  { kind: "heading", text: "Что дальше" },
+  {
+    kind: "paragraph",
+    text: "Первый рейс с новой ливреей примет Ташкент — оттуда команда отправится на заключительный сбор перед стартом чемпионата мира.",
+  },
+  {
+    kind: "paragraph",
+    text: "Федерация футбола Узбекистана сообщила, что программа поддержки сборной не ограничится самолётом: в ближайшие месяцы запланирована серия совместных проектов с партнёрами, включая открытые тренировки, детские турниры и образовательные инициативы для молодых игроков.",
+  },
+];
+
+const STATS: Array<Omit<Stat, "coverImage" | "href" | "publishedAt">> = [
   { id: "1", value: "7 из 10", description: "Университетов мира полностью переведут свои библиотеки в цифровой формат" },
   { id: "2", value: "250 млн", description: "Детей по всему миру не посещают школу" },
-  { id: "3", value: "700 млн", description: "Человек живут менее чем на 24 000 сум в день" },
+  { id: "3", value: "700 млн", description: "Человек живут менее чем на 24 000 сум в день" },
   { id: "4", value: "11 млн тонн", description: "Пластика ежегодно попадает в мировой океан" },
   { id: "5", value: "71%", description: "Мировых выбросов приходится всего на 100 компаний" },
   { id: "6", value: "30%", description: "Задач программистов уже частично выполняются ИИ" },
 ];
 
 function buildStats(): Stat[] {
-  return STATS.map((s) => ({
+  return STATS.map((s, i) => ({
     ...s,
     coverImage: { url: "/img/placeholder.svg", alt: s.description, width: 612, height: 1000 },
+    href: null,
+    // A day apart, so the row shows a run of dates like the Figma does.
+    publishedAt: new Date(BASE_TIME - i * 24 * 60 * 60 * 1000).toISOString(),
+  }));
+}
+
+/*
+ * "Главное за минуту" - short vertical videos.
+ *
+ * The design's covers are finished artwork: the headline and the "SO'ROVNOMA"
+ * badge are burnt into the picture, so these titles never render. They are the
+ * link's accessible name and nothing else, which is why they read as plain
+ * descriptions rather than as the covers' own display copy.
+ */
+const HIGHLIGHTS: Array<Pick<Highlight, "id" | "title">> = [
+  { id: "1", title: "Опрос: культура пользования общественным транспортом" },
+  { id: "2", title: "Может ли хантавирус вызвать новую пандемию" },
+  { id: "3", title: "Как изменились цены на жилье за последний год" },
+  { id: "4", title: "Что ждет рынок труда после внедрения ИИ" },
+  { id: "5", title: "Почему студенты выбирают заочное обучение" },
+  { id: "6", title: "Ташкент переходит на электробусы: первые итоги" },
+];
+
+function buildHighlights(): Highlight[] {
+  return HIGHLIGHTS.map((h) => ({
+    ...h,
+    coverImage: {
+      url: "/img/placeholder.svg",
+      alt: h.title,
+      width: 612,
+      height: 1088,
+    },
     href: null,
   }));
 }
@@ -131,5 +372,70 @@ export const mockNewsRepository: NewsRepository = {
 
   async getRecentStats(_locale, limit) {
     return buildStats().slice(1, 1 + limit);
+  },
+
+  async getHighlights(_locale, limit) {
+    return buildHighlights().slice(0, limit);
+  },
+
+  async getSearchIndex(locale) {
+    return buildArticles(locale);
+  },
+
+  async getArticle(locale, slug) {
+    const article = buildArticles(locale).find((a) => a.slug === slug);
+    if (!article) return null;
+
+    const index = Number(article.id) - 1;
+
+    return {
+      ...article,
+      author: buildAuthorProfile(
+        authorIndexFor(index, article.category.slug),
+        locale,
+      ),
+      coverCaption: "Новый самолет сборной Узбекистана.",
+      coverCredit: "Фото: Portal24",
+      // Offset from publication rather than from "now": under static export a
+      // clock-relative value would be frozen at build time.
+      updatedAt: new Date(
+        Date.parse(article.publishedAt) + 30 * 60 * 1000,
+      ).toISOString(),
+      body: BODY,
+    } satisfies ArticleDetail;
+  },
+
+  async getSlugs(locale) {
+    return buildArticles(locale).map((a) => a.slug);
+  },
+
+  async getRelated(locale, slug, limit) {
+    return buildArticles(locale)
+      .filter((a) => a.slug !== slug)
+      .slice(0, limit);
+  },
+
+  async getAuthor(locale, slug) {
+    const index = AUTHORS.findIndex((a) => a.slug === slug);
+    return index === -1 ? null : buildAuthorProfile(index, locale);
+  },
+
+  async getAuthorSlugs() {
+    return AUTHORS.map((a) => a.slug);
+  },
+
+  async getPopularByAuthor(locale, slug, limit) {
+    // No popularity signal in the fixtures, so this takes a slice from the
+    // middle of the author's run - the same trick getPopular uses, so the
+    // block does not simply repeat the top of "Все статьи" below it.
+    const own = buildArticles(locale).filter((a) => a.author?.slug === slug);
+    return own.slice(2, 2 + limit).concat(own.slice(0, 2)).slice(0, limit);
+  },
+
+  async getByAuthor(locale, slug, limit) {
+    // Already newest-first: buildArticles staggers publishedAt downwards.
+    return buildArticles(locale)
+      .filter((a) => a.author?.slug === slug)
+      .slice(0, limit);
   },
 };

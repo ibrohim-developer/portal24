@@ -25,12 +25,18 @@ export function NewsCard({
   locale,
   size = "md",
   priority = false,
+  showCategory = true,
+  highlight,
 }: {
   article: Article;
   locale: Locale;
   size?: TextBlockSize;
   /** Set on the lead story only - it is the LCP element. */
   priority?: boolean;
+  /** Passed through to the TextBlock; see its note. */
+  showCategory?: boolean;
+  /** Passed through to the TextBlock; set by the search results grid. */
+  highlight?: string;
 }) {
   const href = `/${locale}/news/${article.slug}/`;
 
@@ -55,7 +61,13 @@ export function NewsCard({
         </Link>
       ) : null}
 
-      <TextBlock article={article} locale={locale} size={size} />
+      <TextBlock
+        article={article}
+        locale={locale}
+        size={size}
+        showCategory={showCategory}
+        highlight={highlight}
+      />
     </article>
   );
 }

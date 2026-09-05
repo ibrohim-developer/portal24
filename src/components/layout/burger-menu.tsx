@@ -4,12 +4,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Logo } from "@/components/ui/logo";
+import { SearchIcon } from "@/components/ui/icons";
+import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
 import { NAV_ITEMS } from "@/lib/categories";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
 /**
- * Mobile navigation, from the Figma BurgerMenu (2218:17398).
+ * Mobile navigation, from the Figma "Навигация" section (2218:17584).
+ *
+ * The panel repeats the collapsed header's own row - logo, language, and the
+ * burger in its close state - so nothing shifts as it opens. Under it: the
+ * search field, the category list centred, the four social tiles, and the
+ * Telegram CTA. The category dots and the desktop "О нас" link are not
+ * separated here; the design runs "О нас" on as the last item of the list.
  *
  * The only client component on the main page. Everything else renders on the
  * server, so with JS disabled the page still reads fine - only this toggle is
@@ -50,67 +59,126 @@ export function BurgerMenu({
         onClick={() => setOpen(true)}
         aria-label={dict.nav.menu}
         aria-expanded={open}
-        className="flex h-12 w-12 items-center justify-center bg-hairline lg:hidden"
+        className="-mr-3 flex h-11 w-11 items-center justify-center text-ink-900 nav:hidden"
       >
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
-          <path
-            d="M0 1h20M0 7h20M0 13h20"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-        </svg>
+        <BurgerIcon />
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
-          <div className="flex h-20 items-center justify-between px-4">
-            <span className="text-body font-medium">{dict.nav.menu}</span>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label={dict.nav.close}
-              className="flex h-12 w-12 items-center justify-center bg-hairline"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M2 2l12 12M14 2L2 14"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
+        <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-white nav:hidden">
+          <div className="flex h-20 shrink-0 items-center justify-between gap-4 px-4">
+            <Logo locale={locale} label={dict.a11y.home} />
+
+            <div className="flex items-center gap-1">
+              <LanguageSwitcher current={locale} label={dict.a11y.languages} />
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label={dict.nav.close}
+                className="-mr-3 flex h-11 w-11 items-center justify-center text-ink-900"
+              >
+                <CloseIcon />
+              </button>
+            </div>
           </div>
 
-          <nav
-            aria-label={dict.a11y.mainNav}
-            className="flex flex-col gap-7 overflow-y-auto px-4 py-6"
-          >
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.key}
-                href={`/${locale}/${item.href}/`}
-                onClick={() => setOpen(false)}
-                className="text-title-sm text-ink-900"
+          <div className="flex flex-col px-4 pb-10">
+            {/* Same destination as the header's search button. A plain GET:
+                it lands on /search/?q= and the page filters from there. */}
+            <form role="search" action={`/${locale}/search/`} className="relative">
+              <label htmlFor="menu-search" className="sr-only">
+                {dict.nav.search}
+              </label>
+              <input
+                id="menu-search"
+                type="search"
+                name="q"
+                placeholder={dict.nav.searchPlaceholder}
+                className="h-12 w-full bg-hairline pr-12 pl-4 text-body text-ink-900 outline-none placeholder:text-ink-400 focus-visible:ring-1 focus-visible:ring-accent"
+              />
+              <button
+                type="submit"
+                aria-label={dict.nav.search}
+                className="absolute top-0 right-0 flex h-12 w-12 items-center justify-center text-ink-900"
               >
-                #{dict.nav[item.key]}
-              </Link>
-            ))}
+                <SearchIcon />
+              </button>
+            </form>
 
-            <Link
-              href={`/${locale}/about/`}
-              onClick={() => setOpen(false)}
-              className="text-title-sm text-ink-900"
+            <nav
+              aria-label={dict.a11y.mainNav}
+              className="flex flex-col items-center gap-9 py-8 text-center"
             >
-              {dict.nav.about}
-            </Link>
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.key}
+                  href={`/${locale}/${item.href}/`}
+                  onClick={() => setOpen(false)}
+                  className="text-body text-ink-900"
+                >
+                  #{dict.nav[item.key]}
+                </Link>
+              ))}
 
-            <div className="pt-4">
-              <LanguageSwitcher current={locale} label={dict.a11y.languages} />
-            </div>
-          </nav>
+              <Link
+                href={`/${locale}/about/`}
+                onClick={() => setOpen(false)}
+                className="text-body text-ink-900"
+              >
+                {dict.nav.about}
+              </Link>
+            </nav>
+
+            <ul className="flex gap-2">
+              {SOCIAL.map((social) => (
+                <li key={social.label} className="flex-1">
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={social.label}
+                    className="flex h-12 items-center justify-center bg-hairline text-ink-900 transition-colors hover:text-accent"
+                  >
+                    <social.Icon />
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-4 flex h-12 items-center justify-center gap-2 bg-accent text-body text-white transition-opacity hover:opacity-90"
+            >
+              <TelegramIcon />
+              {dict.nav.telegram}
+            </a>
+          </div>
         </div>
       ) : null}
     </>
   );
 }
+
+function BurgerIcon() {
+  return (
+    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
+      <path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2 2l12 12M14 2L2 14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+

@@ -17,6 +17,11 @@ export const categorySlugs = [
 
 export type CategorySlug = (typeof categorySlugs)[number];
 
+/** Narrows a route segment onto the union, the way `isLocale` does for locales. */
+export function isCategorySlug(value: string): value is CategorySlug {
+  return (categorySlugs as readonly string[]).includes(value);
+}
+
 export interface Category {
   slug: CategorySlug;
   /** Display name, already in the current locale. */
@@ -54,4 +59,104 @@ export interface Stat {
   description: string;
   coverImage: ArticleImage | null;
   href: string | null;
+  /** ISO 8601. The card stamps it as a bare day + month. */
+  publishedAt: string;
+}
+
+/**
+ * A "Главное за минуту" card - a short vertical video, shown as its cover.
+ *
+ * The covers in the design carry their own headline and badge as part of the
+ * artwork, so the card renders nothing but the image. `title` is still required:
+ * it is the accessible name of the link, which the picture cannot supply.
+ */
+export interface Highlight {
+  id: string;
+  title: string;
+  coverImage: ArticleImage | null;
+  /** Null until there is somewhere for a short video to open, as with Stat. */
+  href: string | null;
+}
+
+/**
+ * Networks an author can be reached on, in the order the design draws them.
+ *
+ * A domain union rather than a component concern: the CMS stores which network
+ * a contact belongs to, and `SOCIAL_MARKS` in `components/ui/social` is what
+ * turns that into a glyph and a brand label.
+ */
+export const socialNetworks = [
+  "instagram",
+  "telegram",
+  "youtube",
+  "facebook",
+  "linkedin",
+] as const;
+
+export type SocialNetwork = (typeof socialNetworks)[number];
+
+export interface AuthorContact {
+  network: SocialNetwork;
+  href: string;
+}
+
+/**
+ * An author as shown in the article's AuthorBlock (Figma 1878:12804) and on
+ * the author page (Figma 1981:17549), both of which need more than the byline
+ * on a card does. Kept separate from `Author` so a card feed does not have to
+ * carry an avatar it will never render.
+ */
+export interface AuthorProfile extends Author {
+  avatar: ArticleImage | null;
+  /**
+   * The author's beats, rendered as one "#Спорт / #Экология" line.
+   *
+   * Carries the slug as well as the name because the author page links each
+   * beat to its category feed; the article's AuthorBlock only prints names.
+   */
+  categories: Category[];
+  /** Job title, shown under the name on the author page. Null when unknown. */
+  role: string | null;
+  /**
+   * Short biography. Author page only - the AuthorBlock has no room for it.
+   *
+   * Blank lines separate paragraphs; the hero renders each as its own `<p>`.
+   */
+  bio: string | null;
+  /**
+   * The author's own accounts, rendered as the "Контакты для связи" buttons.
+   * Empty when they publish no way to reach them, which drops the block.
+   */
+  contacts: AuthorContact[];
+}
+
+/**
+ * One element of an article body.
+ *
+ * A discriminated list rather than an HTML string: the design gives `callout`
+ * and `image` their own treatment, and a CMS that hands us HTML would smuggle
+ * markup past every style here. When the admin API lands, map its block format
+ * onto this union in the repository.
+ */
+export type ArticleBlock =
+  | { kind: "heading"; text: string }
+  | { kind: "paragraph"; text: string }
+  /** The "AttentionText" pull-quote - accent rule, accent text, 8% accent panel. */
+  | { kind: "callout"; text: string }
+  | {
+      kind: "image";
+      image: ArticleImage;
+      caption: string | null;
+      /** Photo credit, stamped after the caption's separator dot. */
+      credit: string | null;
+    };
+
+/** A single article page: everything `Article` has, plus the body. */
+export interface ArticleDetail extends Article {
+  author: AuthorProfile | null;
+  coverCaption: string | null;
+  coverCredit: string | null;
+  /** Null when the story has not been edited since publication. */
+  updatedAt: string | null;
+  body: ArticleBlock[];
 }

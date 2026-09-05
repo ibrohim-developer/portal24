@@ -4,7 +4,8 @@ import type { Locale } from "@/i18n/config";
 
 /**
  * Sidebar feed where every card carries its category's background tint
- * (Figma 1852:13456). Tints are full-bleed with no inset - that is the design.
+ * (Figma 1852:13456). The Figma runs the text flush to the tint edge; `inset`
+ * overrides that here because it reads as cramped in the 300px column.
  */
 export function PopularSidebar({
   articles,
@@ -29,6 +30,7 @@ export function PopularSidebar({
             locale={locale}
             size="md"
             tinted
+            inset
           />
         ))}
       </div>

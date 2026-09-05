@@ -13,6 +13,7 @@
     "about": "About us",
     "telegram": "Telegram",
     "search": "Search",
+    "searchPlaceholder": "Search the news...",
     "menu": "Menu",
     "close": "Close"
   },
@@ -21,22 +22,113 @@
     "popular": "#Popular",
     "numberOfDay": "Number of the day",
     "recentNumbers": "Recent figures",
+    "minute": "The week in a minute",
     "seeAll": "See all",
+    "showMore": "Show more",
     "read": "Read"
   },
+  "article": {
+    "updated": "Updated",
+    "authorLabel": "Article author",
+    "authorCta": "More articles by this author",
+    "readAlso": "Read also",
+    "dailyPick": "Pick of the day"
+  },
+  "author": {
+    "label": "Author",
+    "bioTitle": "About",
+    "contactsTitle": "Get in touch",
+    "popularTitle": "Popular articles",
+    "allTitle": "All articles",
+    "empty": "This author has not published any articles yet."
+  },
+  "popular": {
+    "description": "The most-read stories on Portal24.",
+    "empty": "There are no popular stories yet."
+  },
+  "category": {
+    "description": "Portal24 stories from the {category} section.",
+    "empty": "There are no stories in this section yet."
+  },
+  "search": {
+    "title": "Search",
+    "description": "Search the stories on Portal24.",
+    "hint": "Type a word or phrase to find a story.",
+    "results": "Results for “{query}”",
+    "empty": "Nothing found for “{query}”",
+    "emptyHint": "There may be a typo, or we do not have that story yet",
+    "popularTitle": "Popular this week",
+    "suggestions": {
+      "worldCup": "World Cup",
+      "ai": "Artificial intelligence",
+      "airTashkent": "Air in Tashkent",
+      "inflation": "Inflation"
+    }
+  },
+  "about": {
+    "title": "Portal24 — an independent online publication from Uzbekistan.",
+    "focusIntro": "The newsroom pays particular attention to:",
+    "focus": {
+      "eco": "Ecology",
+      "education": "Education",
+      "tech": "Technology",
+      "finance": "Finance"
+    },
+    "coverage": "It also reports daily on current events in Uzbekistan, Central Asia and the wider world.",
+    "platformsTitle": "Platforms and languages",
+    "platformsText": "Portal24 publishes in Russian and Uzbek. We work on our own digital platforms, including:",
+    "goalLabel": "Our goal",
+    "goalValue": "Reliability",
+    "goalText": "To give readers timely, verified and trustworthy information",
+    "legalTitle": "Legal information",
+    "legalText": "Registered with the Agency for Information and Mass Communications under the Administration of the President of the Republic of Uzbekistan. Online media registration certificate No. 2588770 of 2 October 2024.",
+    "editorLabel": "Editor-in-chief",
+    "editorName": "Javohir Qadamov",
+    "mediaKit": {
+      "title": "Media kit",
+      "download": "Download",
+      "items": [
+        {
+          "title": "The project in numbers",
+          "text": "Who we are, our key metrics, reach and audience size"
+        },
+        {
+          "title": "Audience profile",
+          "text": "Detailed demographics (gender, age, location) and our readers' interests"
+        },
+        {
+          "title": "Advertising formats",
+          "text": "Ready-made integrations — from native posts and banners to large special projects"
+        },
+        {
+          "title": "Rate card and terms",
+          "text": "Current prices, package offers and delivery times"
+        },
+        {
+          "title": "Our case studies",
+          "text": "Examples of successful campaigns, with results in numbers"
+        }
+      ]
+    }
+  },
   "footer": {
+    "telegramPitch": "Every major story in real time — on our Telegram channel.",
+    "telegramCta": "Subscribe",
     "sectionsTitle": "Sections",
     "editorialTitle": "Editorial",
     "aboutPublication": "About the publication",
     "mediaKit": "Download media kit",
     "socialTitle": "Follow us",
     "legal": "PORTAL24 — зарегистрировано в Агентстве информации и массовых коммуникаций при Администрации Президента Республики Узбекистан. Свидетельство о регистрации интернет-СМИ №2588770 от 02.10.2024",
-    "founder": "Учредитель: «AXBOROT MEDIA» MCHJ. Главный редактор: Кадамов Жавохир Азизбекович"
+    "founder": "Учредитель: «AXBOROT MEDIA» MCHJ",
+    "editor": "Главный редактор: Кадамов Жавохир Азизбекович"
   },
   "a11y": {
     "home": "Portal24 — go to homepage",
     "mainNav": "Main navigation",
     "languages": "Choose language",
-    "advertising": "Advertising"
+    "advertising": "Advertising",
+    "prev": "Previous",
+    "next": "Next"
   }
 }

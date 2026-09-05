@@ -30,3 +30,18 @@ export function formatArticleDate(iso: string, locale: Locale): string {
     timeZone: "Asia/Tashkent",
   }).format(date);
 }
+
+/**
+ * Bare day + month, e.g. "13 июня" - the stamp on the "Цифры последних дней"
+ * cards, which carry no time and no year in the design.
+ */
+export function formatStatDate(iso: string, locale: Locale): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    day: "numeric",
+    month: "long",
+    timeZone: "Asia/Tashkent",
+  }).format(date);
+}

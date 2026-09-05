@@ -1,56 +1,80 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/cn";
+import { CATEGORY_TINT } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
-import type { Article, CategorySlug } from "@/lib/news/types";
+import { highlightParts } from "@/lib/news/search";
+import type { Article } from "@/lib/news/types";
 import type { Locale } from "@/i18n/config";
-
-/**
- * The category → background tint mapping from the Figma component set
- * (variant axis `Category` on 1677:10811). The category label itself is always
- * ink-600; only the block background changes.
- */
-const CATEGORY_TINT: Record<CategorySlug, string> = {
-  eco: "bg-cat-eco",
-  sport: "bg-cat-sport",
-  finance: "bg-cat-finance",
-  tech: "bg-cat-tech",
-  education: "bg-cat-education",
-};
 
 export type TextBlockSize = "lg" | "md";
 
 /**
  * Headline + meta, matching the Figma TextBlock component set.
  *
- * The tint is full-bleed with no inset - the design deliberately runs text to
- * the block edge, which reads as a colour band in the 300px sidebar column.
+ * The Figma runs text flush to the tint edge on every instance. `inset` opts a
+ * caller out of that - see its note.
  */
 export function TextBlock({
   article,
   locale,
   size = "md",
+  titleWeight = "medium",
   tinted = false,
+  inset = false,
+  showCategory = true,
+  highlight,
 }: {
   article: Article;
   locale: Locale;
   size?: TextBlockSize;
+  /**
+   * The thumbnail-row cards set their headline in regular weight; every card
+   * that stacks its headline under a cover image uses medium.
+   */
+  titleWeight?: "medium" | "normal";
   tinted?: boolean;
+  /**
+   * Pads the tint away from the text. A deliberate departure from the Figma,
+   * which runs text flush to the edge everywhere - at both the 300px sidebar
+   * width and the 253px article-page column that reads as cramped. Set by the
+   * home sidebar and by the article page's headline-only block.
+   */
+  inset?: boolean;
+  /**
+   * Off for the two small cards in the author page's "Популярные статьи"
+   * block, which run image straight into headline. Everywhere else the label
+   * is the first line of the block.
+   */
+  showCategory?: boolean;
+  /**
+   * A search query whose words are painted with the highlight yellow inside
+   * the headline. Set by the search results grid; unset everywhere else.
+   */
+  highlight?: string;
 }) {
   return (
     <div
       className={cn(
         "flex flex-col gap-3",
         tinted && CATEGORY_TINT[article.category.slug],
+        inset && "p-4",
       )}
     >
-      <span className="text-caption text-ink-600">
-        #{article.category.name}
-      </span>
+      {showCategory ? (
+        <span className="text-caption text-ink-600">
+          #{article.category.name}
+        </span>
+      ) : null}
 
+      {/* `break-words` because a headline is arbitrary text: the narrowest
+          card this block draws is ~118px wide on a 320px screen, and Russian
+          has plenty of single words longer than that. Without it one of them
+          reaches past the card instead of breaking. */}
       <h3
         className={cn(
-          "font-medium text-ink-900",
+          "text-ink-900 break-words",
+          titleWeight === "normal" ? "font-normal" : "font-medium",
           size === "lg" ? "text-title-sm" : "text-body",
         )}
       >
@@ -58,7 +82,17 @@ export function TextBlock({
           href={`/${locale}/news/${article.slug}/`}
           className="transition-colors hover:text-accent"
         >
-          {article.title}
+          {highlight
+            ? highlightParts(article.title, highlight).map((part, i) =>
+                part.hit ? (
+                  <mark key={i} className="bg-highlight text-ink-900">
+                    {part.text}
+                  </mark>
+                ) : (
+                  part.text
+                ),
+              )
+            : article.title}
         </Link>
       </h3>
 
