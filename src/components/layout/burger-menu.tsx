@@ -12,11 +12,12 @@ import { strings } from "@/lib/strings";
 /**
  * Mobile navigation, from the Figma "Навигация" section (2218:17584).
  *
- * The panel repeats the collapsed header's own row - logo, language, and the
- * burger in its close state - so nothing shifts as it opens. Under it: the
+ * The panel repeats the collapsed header's own row - logo and the burger in
+ * its close state - so nothing shifts as it opens. The design puts a language
+ * switcher between them, which this site has no use for. Under the row: the
  * search field, the category list centred, the four social tiles, and the
- * Telegram CTA. The category dots and the desktop "О нас" link are not
- * separated here; the design runs "О нас" on as the last item of the list.
+ * Telegram CTA. The category dots and the desktop "Biz haqimizda" link are not
+ * separated here; the design runs it on as the last item of the list.
  *
  * The only client component on the main page. Everything else renders on the
  * server, so with JS disabled the page still reads fine - only this toggle is
