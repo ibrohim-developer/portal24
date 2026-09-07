@@ -13,6 +13,11 @@ import type { Article } from "@/lib/news/types";
  *
  * The Figma's Hover variants are handled here as CSS `:hover` rather than as
  * separate components; they only change colour and image scale.
+ *
+ * The group is named `card` so the two halves hover together: the cover scales
+ * and the headline turns accent from either one. Named because a plain `group`
+ * would also match the ArticleFeed <details> that wraps a whole grid of these,
+ * where hovering the "показать ещё" button would light up every card in it.
  */
 const IMAGE_ASPECT: Record<TextBlockSize, string> = {
   lg: "aspect-[633/465]",
@@ -38,7 +43,7 @@ export function NewsCard({
   const href = `/news/${article.slug}/`;
 
   return (
-    <article className="group flex flex-col gap-gutter">
+    <article className="group/card flex flex-col gap-gutter">
       {article.coverImage ? (
         <Link
           href={href}
@@ -53,7 +58,7 @@ export function NewsCard({
             height={article.coverImage.height}
             priority={priority}
             sizes={size === "lg" ? "(max-width: 1023px) 100vw, 633px" : "(max-width: 1023px) 100vw, 307px"}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
           />
         </Link>
       ) : null}

@@ -21,7 +21,7 @@ export function NewsRow({
   const href = `/news/${article.slug}/`;
 
   return (
-    <article className="group flex gap-3 border-b border-hairline pb-gutter">
+    <article className="group/card flex gap-3 border-b border-hairline pb-gutter">
       {article.coverImage ? (
         <Link
           href={href}
@@ -35,7 +35,7 @@ export function NewsRow({
             width={article.coverImage.width}
             height={article.coverImage.height}
             sizes="150px"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
           />
         </Link>
       ) : null}

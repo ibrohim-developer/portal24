@@ -9,7 +9,8 @@ import { cn } from "@/lib/cn";
  * component (title 36/45, link 16/24, 8px gap).
  *
  * Some blocks hide the link and put controls there instead (the numbers row
- * uses prev/next buttons); pass those as `actions`.
+ * uses prev/next buttons); pass those as `actions` - as a single element that
+ * brings its own alignment, since it is placed in the flex row unwrapped.
  */
 export function SectionHead({
   title,
@@ -42,16 +43,22 @@ export function SectionHead({
       </h2>
 
       {actions ? (
-        // The Figma centres the control group against the 45px title line.
-        <div className="self-center">{actions}</div>
+        // Rendered bare: the caller owns the wrapper, so a group it hides
+        // on some breakpoint leaves nothing behind here to take up a line of
+        // its own when the head wraps.
+        actions
       ) : href && linkLabel ? (
+        // Desktop only: on mobile the same destination is a full-width
+        // button under the block (SeeAllButton), so the head keeps just the
+        // title there.
+        //
         // The hover fill's own box is the thing that lines up with the
         // container edge the cards below share, so the horizontal padding sits
         // inside it and insets the label. Only the vertical padding is pulled
         // back, to keep the chip from growing the row past the title line.
         <Link
           href={href}
-          className="-my-2 flex items-center gap-1 whitespace-nowrap px-2.5 py-2 text-body text-ink-600 transition-colors hover:bg-highlight hover:text-ink-900"
+          className="-my-2 hidden items-center gap-1 whitespace-nowrap px-2.5 py-2 text-body text-ink-600 transition-colors hover:bg-highlight hover:text-ink-900 lg:flex"
         >
           {linkLabel}
           <ChevronRightIcon />

@@ -23,7 +23,8 @@ import { SectionHead } from "@/components/ui/section-head";
  * row.
  *
  * The row stays a native scroller, so touch and keyboard still work when the
- * buttons do not; they are the only part of the block that needs JS.
+ * buttons do not; they are the only part of the block that needs JS, and the
+ * only part mobile drops entirely.
  *
  * Children are the `<li>` cards.
  */
@@ -85,7 +86,11 @@ export function BleedCarousel({
           <SectionHead
             title={title}
             actions={
-              <div className="flex">
+              // Mobile has no room for the pair beside the title, and the row
+              // is a native scroller there anyway - a finger does what the
+              // arrows do. They come back with the desktop layout at `lg`,
+              // centred against the title line the way the Figma has them.
+              <div className="hidden self-center lg:flex">
                 <ArrowButton
                   label={prevLabel}
                   disabled={atStart}
