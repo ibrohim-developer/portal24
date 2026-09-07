@@ -2,7 +2,7 @@ import type {
   Article,
   ArticleDetail,
   AuthorProfile,
-  CategorySlug,
+  Category,
   Highlight,
   Stat,
 } from "./types";
@@ -15,11 +15,20 @@ import type {
  * change `getNewsRepository` below. No component imports anything else.
  */
 export interface NewsRepository {
+  /**
+   * Every category the source publishes, in its own order.
+   *
+   * The fixtures answer with the design's five; the API answers with whatever
+   * the CMS holds today, which is a different six. So a page that draws a
+   * block per category asks for this rather than importing a constant.
+   */
+  getCategories(): Promise<Category[]>;
   /** Lead story plus the secondary stories beside it. */
   getTopStories(limit: number): Promise<Article[]>;
   /** Most-read, used by both the main column and the sidebar. */
   getPopular(limit: number): Promise<Article[]>;
-  getByCategory(category: CategorySlug, limit: number): Promise<Article[]>;
+  /** Takes a slug from `getCategories`, not a fixed union - see `Category`. */
+  getByCategory(category: string, limit: number): Promise<Article[]>;
   /** Single highlighted figure - the "Цифра дня" block. */
   getStatOfTheDay(): Promise<Stat | null>;
   /** Carousel of recent figures. */
@@ -67,8 +76,29 @@ export interface NewsRepository {
   getByAuthor(slug: string, limit: number): Promise<Article[]>;
 }
 
+import { apiNewsRepository } from "./api-repository";
 import { mockNewsRepository } from "./mock-repository";
 
-export function getNewsRepository(): NewsRepository {
-  return mockNewsRepository;
+/**
+ * Where a page reads its content from.
+ *
+ * `"api"` is api.portal24.uz; `"fixtures"` is the seeded data this site was
+ * built against. The main page is on the API and the rest of the site is not,
+ * because the API has stories and categories but no bylines, no figures and
+ * no article bodies this app can render yet - `api-repository` lists what
+ * each gap is waiting on.
+ *
+ * Note that `"api"` is not purely the API: it falls back to fixtures for those
+ * gaps, so a page on it can still draw a fixture author or figure.
+ */
+export type ContentSource = "api" | "fixtures";
+
+/**
+ * The single swap point. Flip the default to `"api"` when the remaining gaps
+ * are closed, and the argument at every call site can go.
+ */
+export function getNewsRepository(
+  source: ContentSource = "fixtures",
+): NewsRepository {
+  return source === "api" ? apiNewsRepository : mockNewsRepository;
 }

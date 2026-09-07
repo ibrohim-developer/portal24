@@ -8,7 +8,7 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { ArticleFeed } from "@/components/ui/article-feed";
 import { Container } from "@/components/ui/container";
 import { LeadBlock } from "@/components/ui/lead-block";
-import { getNewsRepository } from "@/lib/news/repository";
+import { getNewsRepository, type ContentSource } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 import { categorySlugs, isCategorySlug } from "@/lib/news/types";
 
@@ -26,16 +26,47 @@ import { categorySlugs, isCategorySlug } from "@/lib/news/types";
 const FEED_LIMIT = 24;
 const GRID_INITIAL = 9;
 
-/** The five categories are built ahead of time; anything else is a 404. */
+/** Every known category is built ahead of time; anything else is a 404. */
 export const dynamicParams = false;
 
 /**
- * These five are the only paths this segment claims. `about`, `authors`,
- * `news`, `popular` and `search` are static siblings, and a static segment
- * wins over a dynamic one, so none of them can be shadowed from here.
+ * A category can come from either taxonomy, so the page has to know which.
+ *
+ * The design's five are fixtures and are named by `strings.nav`; the CMS's own
+ * six come from the API and are named by the API. Both are built: the main
+ * page links to the CMS ones, while article and author pages - still on
+ * fixtures - link to the design ones, and neither set may 404.
  */
-export function generateStaticParams() {
-  return categorySlugs.map((category) => ({ category }));
+async function resolveCategory(
+  slug: string,
+): Promise<{ source: ContentSource; name: string } | null> {
+  // The CMS is asked first, because the two taxonomies overlap on `sport`:
+  // Спорт transliterates to the same segment the design already used. Real
+  // stories win that collision - the main page's #Спорт block links here, and
+  // it would be odd for it to open a page of fixtures.
+  const match = (await getNewsRepository("api").getCategories()).find(
+    (candidate) => candidate.slug === slug,
+  );
+  if (match) return { source: "api", name: match.name };
+
+  if (isCategorySlug(slug)) {
+    return { source: "fixtures", name: strings.nav[slug] };
+  }
+
+  return null;
+}
+
+/**
+ * The paths this segment claims. `about`, `authors`, `news`, `popular` and
+ * `search` are static siblings, and a static segment wins over a dynamic one,
+ * so none of them can be shadowed from here.
+ */
+export async function generateStaticParams() {
+  const cmsCategories = await getNewsRepository("api").getCategories();
+
+  return [...categorySlugs, ...cmsCategories.map((c) => c.slug)]
+    .filter((category, index, all) => all.indexOf(category) === index)
+    .map((category) => ({ category }));
 }
 
 type CategoryParams = { params: Promise<{ category: string }> };
@@ -44,10 +75,11 @@ export async function generateMetadata({
   params,
 }: CategoryParams): Promise<Metadata> {
   const { category } = await params;
-  if (!isCategorySlug(category)) notFound();
+  const resolved = await resolveCategory(category);
+  if (!resolved) notFound();
 
   // The heading carries the design's hash prefix; the browser tab should not.
-  const name = strings.nav[category];
+  const name = resolved.name;
   const description = strings.category.description.replace("{category}", name);
 
   return {
@@ -78,9 +110,10 @@ export async function generateMetadata({
  */
 export default async function CategoryPage({ params }: CategoryParams) {
   const { category } = await params;
-  if (!isCategorySlug(category)) notFound();
+  const resolved = await resolveCategory(category);
+  if (!resolved) notFound();
 
-  const repo = getNewsRepository();
+  const repo = getNewsRepository(resolved.source);
 
   const [articles, statOfDay] = await Promise.all([
     repo.getByCategory(category, FEED_LIMIT),
@@ -121,7 +154,7 @@ export default async function CategoryPage({ params }: CategoryParams) {
               same type scale, hash prefix and all.
             */}
             <h1 className="text-title-sm font-medium text-ink-900 lg:text-title-lg">
-              #{strings.nav[category]}
+              #{resolved.name}
             </h1>
 
             {/*

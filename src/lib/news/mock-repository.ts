@@ -1,4 +1,5 @@
 import type { NewsRepository } from "./repository";
+import { categorySlugs } from "./types";
 import type {
   Article,
   ArticleBlock,
@@ -161,9 +162,11 @@ const AUTHORS: Array<{
  * #Финансы stories is visible as wrong the moment the page loads. Where two
  * authors share a beat the index alternates between them.
  */
-function authorIndexFor(index: number, category: CategorySlug): number {
+// Takes a plain string because `Category.slug` is one now - the fixtures only
+// ever pass their own five, but the type no longer says so.
+function authorIndexFor(index: number, category: string): number {
   const matches = AUTHORS.flatMap((author, i) =>
-    author.categories.includes(category) ? [i] : [],
+    (author.categories as readonly string[]).includes(category) ? [i] : [],
   );
   // Every category in SEEDS has an author today; degrade rather than throw if
   // a future seed introduces one that does not.
@@ -360,6 +363,15 @@ function buildHighlights(): Highlight[] {
 }
 
 export const mockNewsRepository: NewsRepository = {
+  async getCategories() {
+    // In the Figma nav order, which is the order the main-page blocks and
+    // the footer both start from.
+    return categorySlugs.map((slug) => ({
+      slug,
+      name: CATEGORY_NAMES[slug],
+    }));
+  },
+
   async getTopStories(limit) {
     return buildArticles().slice(0, limit);
   },

@@ -1,4 +1,3 @@
-import type { FeedLayout } from "@/components/ui/feed-block";
 import type { CategorySlug } from "./news/types";
 import type { strings } from "./strings";
 
@@ -21,27 +20,6 @@ export const NAV_ITEMS: NavItem[] = [
   { key: "education", href: "education", category: "education" },
   { key: "finance", href: "finance", category: "finance" },
   { key: "tech", href: "tech", category: "tech" },
-];
-
-/**
- * Categories that get their own block on the main page, in Figma order, each
- * with the arrangement the design gives it.
- *
- * The layout is listed per block rather than derived from the index, because
- * the design is not a pattern: featured, grid, then - across the numbers
- * carousel - grid, featured, and finally the thumbnail rows that "#Популярное"
- * opens the page with. Every attempt to compute this from the position gets
- * one of the five wrong.
- */
-export const HOME_CATEGORY_BLOCKS: {
-  slug: CategorySlug;
-  layout: FeedLayout;
-}[] = [
-  { slug: "sport", layout: "featured" },
-  { slug: "eco", layout: "grid" },
-  { slug: "education", layout: "grid" },
-  { slug: "finance", layout: "featured" },
-  { slug: "tech", layout: "rows" },
 ];
 
 /**
@@ -74,6 +52,44 @@ export const CATEGORY_TINT: Record<CategorySlug, string> = {
   tech: "bg-cat-tech",
   education: "bg-cat-education",
 };
+
+/**
+ * Tints for the categories the CMS actually publishes, which are not the
+ * categories the design drew.
+ *
+ * The Figma's palette has five tints, picked for Sport / Ekologiya / Taʼlim /
+ * Moliya / Texnologiyalar. The CMS publishes six topics, so one colour has to
+ * serve twice whatever the pairing - Foydali doubles up with Oʻzbekiston here
+ * because they are the two least likely to sit next to each other in a feed.
+ *
+ * Every pairing below is provisional and none of them is a design decision:
+ * only Sport carries its own colour by right. This is the table to hand the
+ * designer.
+ */
+const CMS_CATEGORY_TINT: Record<string, string> = {
+  sport: "bg-cat-sport",
+  ozbekiston: "bg-cat-eco",
+  siyosat: "bg-cat-finance",
+  xorij: "bg-cat-tech",
+  jamiyat: "bg-cat-education",
+  foydali: "bg-cat-eco",
+};
+
+/** What a category neither table names is painted with. */
+const FALLBACK_TINT = "bg-cat-eco";
+
+/**
+ * The background tint for any category slug, the design's or the CMS's.
+ *
+ * A function rather than an index into CATEGORY_TINT because `Category.slug`
+ * is now a plain string: a CMS slug misses that table entirely, and indexing
+ * it with one yields `undefined`, which drops the tint silently rather than
+ * falling back to a colour.
+ */
+export function categoryTint(slug: string): string {
+  if (slug in CATEGORY_TINT) return CATEGORY_TINT[slug as CategorySlug];
+  return CMS_CATEGORY_TINT[slug] ?? FALLBACK_TINT;
+}
 
 /**
  * The 2x2 topic grid on the About Us page (Figma 2196:16591), in its order.

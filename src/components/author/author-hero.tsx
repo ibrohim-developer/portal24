@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { SOCIAL_MARKS } from "@/components/ui/social";
 import { cn } from "@/lib/cn";
-import { CATEGORY_TINT } from "@/lib/categories";
+import { categoryTint } from "@/lib/categories";
 import { strings } from "@/lib/strings";
 import type { AuthorProfile } from "@/lib/news/types";
 
@@ -48,7 +48,9 @@ export function AuthorHero({ author }: { author: AuthorProfile }) {
       ) : null}
 
       <div className="flex min-w-0 flex-col">
-        <p className="text-caption text-ink-600">{author.role ?? strings.author.label}</p>
+        <p className="text-caption text-ink-600">
+          {author.role ?? strings.author.label}
+        </p>
 
         <h1 className="mt-2 text-title-sm font-medium text-ink-900 lg:text-title-lg">
           {author.name}
@@ -66,7 +68,7 @@ export function AuthorHero({ author }: { author: AuthorProfile }) {
                 href={`/${category.slug}/`}
                 className={cn(
                   "px-2 py-1 text-caption text-ink-600 transition-opacity hover:opacity-70",
-                  CATEGORY_TINT[category.slug],
+                  categoryTint(category.slug),
                 )}
               >
                 #{category.name}

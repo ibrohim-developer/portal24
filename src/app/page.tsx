@@ -8,9 +8,9 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
 import { FeedBlock, type FeedLayout } from "@/components/ui/feed-block";
 import { LeadBlock } from "@/components/ui/lead-block";
-import { HOME_CATEGORY_BLOCKS } from "@/lib/categories";
 import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
+import type { Category } from "@/lib/news/types";
 
 /** Lead story plus the two cards beside it. */
 const LEAD_LIMIT = 3;
@@ -36,8 +36,29 @@ const CARDS_PER_LAYOUT: Record<FeedLayout, number> = {
   rows: 6,
 };
 
+/**
+ * The arrangement each category block gets, in order.
+ *
+ * Not derivable from the position - the Figma's run is featured, grid, grid,
+ * featured, rows, and every attempt to compute that from an index gets one of
+ * them wrong. This replaces the design-keyed HOME_CATEGORY_BLOCKS now that the
+ * categories themselves come from the CMS rather than from the design. The
+ * CMS publishes six categories to the design's five, so the run cycles; which
+ * arrangement the sixth block should get is a question for the designer.
+ */
+const BLOCK_LAYOUTS: FeedLayout[] = [
+  "featured",
+  "grid",
+  "grid",
+  "featured",
+  "rows",
+];
+
 export default async function HomePage() {
-  const repo = getNewsRepository();
+  // The one page on the live CMS. Its categories, its stories, its ordering -
+  // but still fixture figures and fixture videos, which the API has no source
+  // for; `news/api-repository` lists what each gap is waiting on.
+  const repo = getNewsRepository("api");
 
   // Fetched together rather than in sequence - under static export this only
   // affects build time, but it is the shape we want once these hit a real API.
@@ -57,12 +78,23 @@ export default async function HomePage() {
     repo.getStatOfTheDay(),
     repo.getRecentStats(6),
     repo.getHighlights(6),
-    Promise.all(
-      HOME_CATEGORY_BLOCKS.map(async ({ slug, layout }) => ({
-        slug,
-        layout,
-        articles: await repo.getByCategory(slug, CARDS_PER_LAYOUT[layout]),
-      })),
+    // A block per category the CMS publishes, in the CMS's own order, rather
+    // than the design's five hardcoded topics - of which only Sport exists in
+    // the CMS at all.
+    repo.getCategories().then((categories) =>
+      Promise.all(
+        categories.map(async (category, index) => {
+          const layout = BLOCK_LAYOUTS[index % BLOCK_LAYOUTS.length];
+          return {
+            category,
+            layout,
+            articles: await repo.getByCategory(
+              category.slug,
+              CARDS_PER_LAYOUT[layout],
+            ),
+          };
+        }),
+      ),
     ),
   ]);
 
@@ -83,14 +115,22 @@ export default async function HomePage() {
   // carries its own arrangement, so splitting the run cannot knock the
   // featured/grid sequence out of step.
   const categoryBlock = ({
-    slug,
+    category,
     layout,
     articles,
-  }: (typeof categoryFeeds)[number]) => (
+  }: {
+    category: Category;
+    layout: FeedLayout;
+    articles: typeof popular;
+  }) => (
     <FeedBlock
-      key={slug}
-      title={`#${strings.nav[slug]}`}
-      href={`/${slug}/`}
+      key={category.slug}
+      // The CMS's own name for the topic. It stores those in Cyrillic even
+      // when asked for `lang: uz`, so these headings read "#Ўзбекистон" while
+      // the Latin nav above them reads "#Sport" - a backend spelling to fix in
+      // the admin panel, not something to transliterate on the way in.
+      title={`#${category.name}`}
+      href={`/${category.slug}/`}
       seeAllLabel={strings.sections.seeAll}
       articles={articles}
       layout={layout}

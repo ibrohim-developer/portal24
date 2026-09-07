@@ -12,7 +12,7 @@ import type { Article } from "@/lib/news/types";
  *  - `rows`      two columns of three thumbnail rows
  *
  * Which one a block gets is not derivable from its position: see
- * HOME_CATEGORY_BLOCKS.
+ * BLOCK_LAYOUTS on the main page.
  */
 export type FeedLayout = "featured" | "grid" | "rows";
 

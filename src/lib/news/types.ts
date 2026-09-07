@@ -23,7 +23,15 @@ export function isCategorySlug(value: string): value is CategorySlug {
 }
 
 export interface Category {
-  slug: CategorySlug;
+  /**
+   * URL segment for the category's feed.
+   *
+   * A plain string rather than `CategorySlug`: the union above is the design's
+   * taxonomy, and the CMS publishes its own set, named in Cyrillic and slugged
+   * by transliteration (`news/api/map`). Both have to fit here, so nothing
+   * indexes a fixed table with this - see `categoryTint`.
+   */
+  slug: string;
   /** Display name, ready to draw. */
   name: string;
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/cn";
-import { CATEGORY_TINT } from "@/lib/categories";
+import { categoryTint } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
 import { highlightParts } from "@/lib/news/search";
 import type { Article } from "@/lib/news/types";
@@ -54,7 +54,7 @@ export function TextBlock({
     <div
       className={cn(
         "flex flex-col gap-3",
-        tinted && CATEGORY_TINT[article.category.slug],
+        tinted && categoryTint(article.category.slug),
         inset && "p-4",
       )}
     >
@@ -75,9 +75,12 @@ export function TextBlock({
           size === "lg" ? "text-title-sm" : "text-body",
         )}
       >
+        {/* `group-hover/card` so the headline reacts to the cover image being
+            hovered too - see NewsCard. It is inert wherever this block is not
+            inside one, which is every caller that passes `inset` or `tinted`. */}
         <Link
           href={`/news/${article.slug}/`}
-          className="transition-colors hover:text-accent"
+          className="transition-colors group-hover/card:text-accent hover:text-accent"
         >
           {highlight
             ? highlightParts(article.title, highlight).map((part, i) =>
