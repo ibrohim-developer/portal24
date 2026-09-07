@@ -19,12 +19,6 @@ const API_BASE = process.env.PORTAL24_API_URL ?? "https://api.portal24.uz";
 /** The site publishes in Uzbek only - see `lib/strings`. */
 const LANG = "uz";
 
-/**
- * Under `output: "export"` every fetch runs once at build time, so this only
- * decides how long `next dev` reuses a response while the page is edited.
- */
-const REVALIDATE_SECONDS = 300;
-
 /** The envelope every list endpoint answers with. */
 export interface ApiPage<T> {
   data: T[];
@@ -98,9 +92,13 @@ async function apiGet<T>(
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
 
+  // Deliberately uncached. Each page sets its own `revalidate`, and a fetch
+  // that cached for longer than the page would let a regeneration redraw the
+  // same stale stories - the page would tick over without the news changing.
+  // Identical requests are still memoised within one render pass, so the six
+  // category feeds share the one category lookup between them.
   const response = await fetch(url, {
     headers: { lang: LANG, accept: "application/json" },
-    next: { revalidate: REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {

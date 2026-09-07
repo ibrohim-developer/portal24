@@ -12,6 +12,16 @@ import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 import type { Category } from "@/lib/news/types";
 
+/**
+ * How often the front page picks up newly published stories.
+ *
+ * A minute: this is the page a reader lands on, and the newsroom publishes
+ * through the day. One regeneration costs nine API requests - the category
+ * list, the fresh feed, the popularity pool and a feed per category - against
+ * a 120/minute rate limit, so the ceiling is nowhere near.
+ */
+export const revalidate = 60;
+
 /** Lead story plus the two cards beside it. */
 const LEAD_LIMIT = 3;
 

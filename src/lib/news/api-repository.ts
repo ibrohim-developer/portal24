@@ -19,18 +19,17 @@ import type { NewsRepository } from "./repository";
  */
 
 /**
- * Categories are read once per render pass and reused.
+ * The category list, which `getByCategory` needs because it takes a slug while
+ * the API filters by numeric id.
  *
- * `getByCategory` takes a slug but the API filters by numeric id, so every
- * category feed needs this list first. `fetch` memoisation would already
- * collapse the repeat requests within one page render, but the slug->id map
- * is built here too and there is no reason to rebuild it six times.
+ * Not memoised in a module-level variable, tempting as that is: under ISR this
+ * module lives as long as the Node process, so a promise held here would pin
+ * the category list until the next deploy and a category added in the admin
+ * panel would never appear. `fetch` already collapses the repeat requests
+ * within a single render pass, which is the only place the saving was real.
  */
-let categoryCache: Promise<ApiCategory[]> | null = null;
-
 function loadCategories(): Promise<ApiCategory[]> {
-  categoryCache ??= fetchCategories();
-  return categoryCache;
+  return fetchCategories();
 }
 
 /** How deep to look when a block needs an order the API will not sort by. */

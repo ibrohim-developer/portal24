@@ -26,8 +26,19 @@ import { categorySlugs, isCategorySlug } from "@/lib/news/types";
 const FEED_LIMIT = 24;
 const GRID_INITIAL = 9;
 
-/** Every known category is built ahead of time; anything else is a 404. */
-export const dynamicParams = false;
+/**
+ * Slower than the front page: a category feed is somewhere a reader arrives
+ * having already seen the headline, so it can lag the newsroom by minutes.
+ */
+export const revalidate = 300;
+
+/**
+ * A category the CMS gains after a deploy is rendered on first request rather
+ * than 404ing until someone rebuilds - the reason `getCategories` is no longer
+ * memoised for the life of the process. `resolveCategory` still returns null
+ * for a segment neither taxonomy claims, so a junk URL is a 404 as before.
+ */
+export const dynamicParams = true;
 
 /**
  * A category can come from either taxonomy, so the page has to know which.
