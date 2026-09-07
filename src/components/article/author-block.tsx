@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { ChevronRightIcon } from "@/components/ui/icons";
 import type { AuthorProfile } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Byline card under the article (Figma 1878:12804 desktop / 1981:15620 mobile).
@@ -22,12 +21,10 @@ import type { Locale } from "@/i18n/config";
  */
 export function AuthorBlock({
   author,
-  locale,
   label,
   cta,
 }: {
   author: AuthorProfile;
-  locale: Locale;
   label: string;
   cta: string;
 }) {
@@ -59,7 +56,7 @@ export function AuthorBlock({
         </div>
 
         <Link
-          href={`/${locale}/authors/${author.slug}/`}
+          href={`/authors/${author.slug}/`}
           className="flex h-10 items-center justify-between gap-4 bg-white px-4 text-body text-ink-900 transition-opacity hover:opacity-80 lg:ml-auto lg:min-w-59 lg:shrink-0"
         >
           {cta}

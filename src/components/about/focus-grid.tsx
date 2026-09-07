@@ -12,8 +12,9 @@ import {
  * label, so they are plain divs rather than the TextBlock component the design
  * builds them from.
  *
- * The labels are their own dictionary strings, not the nav names: Russian puts
- * them in the dative after "темам", so "Экология" becomes "Экологии".
+ * The labels are their own strings rather than the nav names. They read as a
+ * list after "eʼtibor qaratadi", so a language that inflects them there - as
+ * the design's Russian does - can set them without disturbing the nav.
  */
 export function FocusGrid({
   labels,

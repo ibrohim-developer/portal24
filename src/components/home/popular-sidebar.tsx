@@ -1,6 +1,5 @@
 import { TextBlock } from "@/components/ui/text-block";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Sidebar feed where every card carries its category's background tint
@@ -9,11 +8,9 @@ import type { Locale } from "@/i18n/config";
  */
 export function PopularSidebar({
   articles,
-  locale,
   title,
 }: {
   articles: Article[];
-  locale: Locale;
   title: string;
 }) {
   return (
@@ -27,7 +24,6 @@ export function PopularSidebar({
           <TextBlock
             key={article.id}
             article={article}
-            locale={locale}
             size="md"
             tinted
             inset

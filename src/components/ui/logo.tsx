@@ -3,8 +3,6 @@ import Link from "next/link";
 
 import { cn } from "@/lib/cn";
 
-import type { Locale } from "@/i18n/config";
-
 /**
  * Exported from the Figma nav (I2232:15466;1934:25004) as SVG.
  *
@@ -13,18 +11,16 @@ import type { Locale } from "@/i18n/config";
  * `unoptimized` serves the SVG as an <img>, which cannot be recoloured.
  */
 export function Logo({
-  locale,
   label,
   tone = "brand",
   className,
 }: {
-  locale: Locale;
   label: string;
   tone?: "brand" | "light";
   className?: string;
 }) {
   return (
-    <Link href={`/${locale}/`} aria-label={label} className="shrink-0">
+    <Link href="/" aria-label={label} className="shrink-0">
       <Image
         src={tone === "light" ? "/icons/logo-white.svg" : "/icons/logo.svg"}
         alt={label}

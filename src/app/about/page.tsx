@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 import { FocusGrid } from "@/components/about/focus-grid";
 import { MediaKitPanel } from "@/components/about/media-kit-panel";
@@ -9,30 +8,13 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { AdsSlot } from "@/components/ui/ads-slot";
 import { BadgePanel } from "@/components/ui/badge-panel";
 import { Container } from "@/components/ui/container";
-import { isLocale, locales, localeHrefLang } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
+import { strings } from "@/lib/strings";
 
-type LocaleParams = { params: Promise<{ locale: string }> };
-
-export async function generateMetadata({
-  params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
-
-  return {
-    title: dict.nav.about,
-    description: dict.about.title,
-    alternates: {
-      canonical: `/${locale}/about`,
-      languages: Object.fromEntries(
-        locales.map((l) => [localeHrefLang[l], `/${l}/about`]),
-      ),
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: strings.nav.about,
+  description: strings.about.title,
+  alternates: { canonical: "/about/" },
+};
 
 /**
  * About Us (Figma "Web" page, section 2196:16803 - Desktop 2196:16341 and
@@ -44,12 +26,8 @@ export async function generateMetadata({
  * covers both - a flex column on mobile with the panel ordered last, switching
  * to a two-track grid at lg where source order is the layout order again.
  */
-export default async function AboutPage({ params }: LocaleParams) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
-  const about = dict.about;
+export default function AboutPage() {
+  const about = strings.about;
 
   return (
     <>
@@ -58,12 +36,12 @@ export default async function AboutPage({ params }: LocaleParams) {
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       <main className="flex-1 pt-head lg:pt-10">
         <Container>
@@ -106,7 +84,7 @@ export default async function AboutPage({ params }: LocaleParams) {
                 title={about.mediaKit.title}
                 items={about.mediaKit.items}
                 downloadLabel={about.mediaKit.download}
-                href={`/${locale}/media-kit/`}
+                href="/media-kit/"
               />
 
               {/* The only block that runs the full 960 of the content column. */}
@@ -159,7 +137,7 @@ export default async function AboutPage({ params }: LocaleParams) {
               <AdsSlot
                 width={300}
                 height={450}
-                label={dict.a11y.advertising}
+                label={strings.a11y.advertising}
                 className="w-full"
               />
             </aside>
@@ -167,7 +145,7 @@ export default async function AboutPage({ params }: LocaleParams) {
         </Container>
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

@@ -1,6 +1,5 @@
 import { NewsCard } from "@/components/ui/news-card";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * A three-up grid of cards with a "Показать ещё" button under it.
@@ -23,12 +22,10 @@ import type { Locale } from "@/i18n/config";
  */
 export function ArticleFeed({
   articles,
-  locale,
   initial,
   moreLabel,
 }: {
   articles: Article[];
-  locale: Locale;
   /** Cards shown before the button is pressed. */
   initial: number;
   moreLabel: string;
@@ -42,7 +39,7 @@ export function ArticleFeed({
     <div className="flex flex-col gap-gutter">
       <div className={grid}>
         {shown.map((article) => (
-          <NewsCard key={article.id} article={article} locale={locale} />
+          <NewsCard key={article.id} article={article} />
         ))}
       </div>
 
@@ -56,7 +53,7 @@ export function ArticleFeed({
 
           <div className={grid}>
             {rest.map((article) => (
-              <NewsCard key={article.id} article={article} locale={locale} />
+              <NewsCard key={article.id} article={article} />
             ))}
           </div>
         </details>

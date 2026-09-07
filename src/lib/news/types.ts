@@ -17,14 +17,14 @@ export const categorySlugs = [
 
 export type CategorySlug = (typeof categorySlugs)[number];
 
-/** Narrows a route segment onto the union, the way `isLocale` does for locales. */
+/** Narrows a route segment onto the union before a page trusts it. */
 export function isCategorySlug(value: string): value is CategorySlug {
   return (categorySlugs as readonly string[]).includes(value);
 }
 
 export interface Category {
   slug: CategorySlug;
-  /** Display name, already in the current locale. */
+  /** Display name, ready to draw. */
   name: string;
 }
 

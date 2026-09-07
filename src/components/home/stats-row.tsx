@@ -3,7 +3,6 @@ import Image from "next/image";
 import { BleedCarousel } from "@/components/ui/bleed-carousel";
 import { formatStatDate } from "@/lib/format";
 import type { Stat } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * "Цифры последних дней" (Figma 1852:13409).
@@ -25,13 +24,11 @@ const STEP = 326;
 export function StatsRow({
   stats,
   title,
-  locale,
   prevLabel,
   nextLabel,
 }: {
   stats: Stat[];
   title: string;
-  locale: Locale;
   prevLabel: string;
   nextLabel: string;
 }) {
@@ -69,7 +66,7 @@ export function StatsRow({
               dateTime={stat.publishedAt}
               className="mt-3 block text-caption text-ink-600"
             >
-              {formatStatDate(stat.publishedAt, locale)}
+              {formatStatDate(stat.publishedAt)}
             </time>
           </div>
         </li>

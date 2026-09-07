@@ -4,8 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
 import { FOOTER_NAV_ITEMS } from "@/lib/categories";
-import type { Locale } from "@/i18n/config";
-import type { Dictionary } from "@/i18n/get-dictionary";
+import { strings } from "@/lib/strings";
 
 /**
  * Footer from the Figma "Футер" page (111:247).
@@ -28,58 +27,51 @@ import type { Dictionary } from "@/i18n/get-dictionary";
  * of it - call-out box, social chips, the divider - is plain white at low
  * opacity, which is how the design builds them.
  */
-export function SiteFooter({
-  locale,
-  dict,
-}: {
-  locale: Locale;
-  dict: Dictionary;
-}) {
+export function SiteFooter() {
   return (
     <footer className="mt-section bg-ink-700 text-white">
       <Container className="py-5 lg:py-10">
         <TelegramCallout
-          pitch={dict.footer.telegramPitch}
-          cta={dict.footer.telegramCta}
+          pitch={strings.footer.telegramPitch}
+          cta={strings.footer.telegramCta}
         />
 
         <Logo
-          locale={locale}
-          label={dict.a11y.home}
+          label={strings.a11y.home}
           tone="light"
           className="h-9 lg:h-[50px]"
         />
 
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-4 lg:gap-8">
-          <FooterColumn title={dict.footer.sectionsTitle}>
+          <FooterColumn title={strings.footer.sectionsTitle}>
             {FOOTER_NAV_ITEMS.map((item) => (
               <Link
                 key={item.key}
-                href={`/${locale}/${item.href}/`}
+                href={`/${item.href}/`}
                 className="text-body text-white transition-opacity hover:opacity-70"
               >
-                #{dict.nav[item.key]}
+                #{strings.nav[item.key]}
               </Link>
             ))}
           </FooterColumn>
 
-          <FooterColumn title={dict.footer.editorialTitle}>
+          <FooterColumn title={strings.footer.editorialTitle}>
             <Link
-              href={`/${locale}/about/`}
+              href="/about/"
               className="text-body text-white transition-opacity hover:opacity-70"
             >
-              {dict.footer.aboutPublication}
+              {strings.footer.aboutPublication}
             </Link>
             <Link
-              href={`/${locale}/media-kit/`}
+              href="/media-kit/"
               className="text-body text-white transition-opacity hover:opacity-70"
             >
-              {dict.footer.mediaKit}
+              {strings.footer.mediaKit}
             </Link>
           </FooterColumn>
 
           <div className="lg:col-span-2">
-            <FooterColumn title={dict.footer.socialTitle}>
+            <FooterColumn title={strings.footer.socialTitle}>
               {/* The labelled chips need ~604px and the two columns they sit
                   in only give them that from 1440 up, so they wrap below it
                   rather than run off the page. Icon-only on mobile, where
@@ -104,11 +96,11 @@ export function SiteFooter({
         </div>
 
         <div className="mt-8 space-y-5 border-t border-white/10 pt-10 text-caption leading-6 text-ink-400">
-          <p className="max-w-xl">{dict.footer.legal}</p>
+          <p className="max-w-xl">{strings.footer.legal}</p>
           <p>
-            {dict.footer.founder}
+            {strings.footer.founder}
             <br />
-            {dict.footer.editor}
+            {strings.footer.editor}
           </p>
         </div>
       </Container>

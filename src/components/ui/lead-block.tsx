@@ -1,6 +1,5 @@
 import { NewsCard } from "@/components/ui/news-card";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * One large lead story beside a column of two smaller cards, 633 to 307 -
@@ -14,19 +13,17 @@ import type { Locale } from "@/i18n/config";
 export function LeadBlock({
   lead,
   secondary,
-  locale,
   secondaryCategory = true,
 }: {
   lead: Article;
   secondary: Article[];
-  locale: Locale;
   /** See the note above - false only on the author page. */
   secondaryCategory?: boolean;
 }) {
   return (
     <section className="flex flex-col gap-gutter lg:grid lg:grid-lead lg:items-start">
       <div className="min-w-0">
-        <NewsCard article={lead} locale={locale} size="lg" priority />
+        <NewsCard article={lead} size="lg" priority />
       </div>
 
       <div className="grid min-w-0 gap-gutter sm:grid-cols-2 lg:grid-cols-1">
@@ -34,7 +31,6 @@ export function LeadBlock({
           <NewsCard
             key={article.id}
             article={article}
-            locale={locale}
             showCategory={secondaryCategory}
           />
         ))}

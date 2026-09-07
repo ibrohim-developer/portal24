@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { formatArticleDate } from "@/lib/format";
 import type { ArticleDetail } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Category, headline, byline (Figma HeadNewsText 1852:19335). 20px between
@@ -18,11 +17,9 @@ import type { Locale } from "@/i18n/config";
  */
 export function ArticleHead({
   article,
-  locale,
   updatedLabel,
 }: {
   article: ArticleDetail;
-  locale: Locale;
   updatedLabel: string;
 }) {
   const stamp = article.updatedAt ?? article.publishedAt;
@@ -30,7 +27,7 @@ export function ArticleHead({
   return (
     <header className="flex flex-col gap-gutter">
       <Link
-        href={`/${locale}/${article.category.slug}/`}
+        href={`/${article.category.slug}/`}
         className="w-fit text-caption text-ink-600 transition-colors hover:text-accent"
       >
         #{article.category.name}
@@ -43,7 +40,7 @@ export function ArticleHead({
       <div className="flex flex-wrap items-center gap-2 text-caption text-ink-600">
         <time dateTime={stamp}>
           {article.updatedAt ? `${updatedLabel} ` : ""}
-          {formatArticleDate(stamp, locale)}
+          {formatArticleDate(stamp)}
         </time>
         {article.author ? (
           <>

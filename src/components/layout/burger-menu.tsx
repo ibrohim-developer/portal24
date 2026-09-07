@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Logo } from "@/components/ui/logo";
 import { SearchIcon } from "@/components/ui/icons";
 import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
 import { NAV_ITEMS } from "@/lib/categories";
-import type { Locale } from "@/i18n/config";
-import type { Dictionary } from "@/i18n/get-dictionary";
+import { strings } from "@/lib/strings";
 
 /**
  * Mobile navigation, from the Figma "Навигация" section (2218:17584).
@@ -24,13 +22,7 @@ import type { Dictionary } from "@/i18n/get-dictionary";
  * server, so with JS disabled the page still reads fine - only this toggle is
  * inert, which is why the links it contains are duplicated in the footer.
  */
-export function BurgerMenu({
-  locale,
-  dict,
-}: {
-  locale: Locale;
-  dict: Dictionary;
-}) {
+export function BurgerMenu() {
   const [open, setOpen] = useState(false);
 
   // A drawer that stays open while the page scrolls underneath reads as a bug.
@@ -57,7 +49,7 @@ export function BurgerMenu({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={dict.nav.menu}
+        aria-label={strings.nav.menu}
         aria-expanded={open}
         className="-mr-3 flex h-11 w-11 items-center justify-center text-ink-900 nav:hidden"
       >
@@ -67,14 +59,13 @@ export function BurgerMenu({
       {open ? (
         <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-white nav:hidden">
           <div className="flex h-20 shrink-0 items-center justify-between gap-4 px-4">
-            <Logo locale={locale} label={dict.a11y.home} />
+            <Logo label={strings.a11y.home} />
 
             <div className="flex items-center gap-1">
-              <LanguageSwitcher current={locale} label={dict.a11y.languages} />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label={dict.nav.close}
+                aria-label={strings.nav.close}
                 className="-mr-3 flex h-11 w-11 items-center justify-center text-ink-900"
               >
                 <CloseIcon />
@@ -85,20 +76,20 @@ export function BurgerMenu({
           <div className="flex flex-col px-4 pb-10">
             {/* Same destination as the header's search button. A plain GET:
                 it lands on /search/?q= and the page filters from there. */}
-            <form role="search" action={`/${locale}/search/`} className="relative">
+            <form role="search" action="/search/" className="relative">
               <label htmlFor="menu-search" className="sr-only">
-                {dict.nav.search}
+                {strings.nav.search}
               </label>
               <input
                 id="menu-search"
                 type="search"
                 name="q"
-                placeholder={dict.nav.searchPlaceholder}
+                placeholder={strings.nav.searchPlaceholder}
                 className="h-12 w-full bg-hairline pr-12 pl-4 text-body text-ink-900 outline-none placeholder:text-ink-400 focus-visible:ring-1 focus-visible:ring-accent"
               />
               <button
                 type="submit"
-                aria-label={dict.nav.search}
+                aria-label={strings.nav.search}
                 className="absolute top-0 right-0 flex h-12 w-12 items-center justify-center text-ink-900"
               >
                 <SearchIcon />
@@ -106,26 +97,26 @@ export function BurgerMenu({
             </form>
 
             <nav
-              aria-label={dict.a11y.mainNav}
+              aria-label={strings.a11y.mainNav}
               className="flex flex-col items-center gap-9 py-8 text-center"
             >
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.key}
-                  href={`/${locale}/${item.href}/`}
+                  href={`/${item.href}/`}
                   onClick={() => setOpen(false)}
                   className="text-body text-ink-900"
                 >
-                  #{dict.nav[item.key]}
+                  #{strings.nav[item.key]}
                 </Link>
               ))}
 
               <Link
-                href={`/${locale}/about/`}
+                href="/about/"
                 onClick={() => setOpen(false)}
                 className="text-body text-ink-900"
               >
-                {dict.nav.about}
+                {strings.nav.about}
               </Link>
             </nav>
 
@@ -152,7 +143,7 @@ export function BurgerMenu({
               className="mt-4 flex h-12 items-center justify-center gap-2 bg-accent text-body text-white transition-opacity hover:opacity-90"
             >
               <TelegramIcon />
-              {dict.nav.telegram}
+              {strings.nav.telegram}
             </a>
           </div>
         </div>

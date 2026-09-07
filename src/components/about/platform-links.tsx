@@ -7,7 +7,7 @@ import { SOCIAL } from "@/components/ui/social";
  * Same four marks as the footer, and the same desktop/mobile split: labelled
  * on desktop, icon-only once the row has to fit in 358px. The buttons share the
  * row evenly rather than sitting at the design's fixed 149px, which keeps them
- * flush with the column edge in every locale.
+ * flush with the column edge whatever the labels grow to.
  *
  * The labels do not fit that 149px at the design's 24px side padding - the
  * widest of them ("Instagram") needs 156 - so the padding is 16 here, which

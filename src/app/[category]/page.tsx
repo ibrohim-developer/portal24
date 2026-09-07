@@ -8,9 +8,8 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { ArticleFeed } from "@/components/ui/article-feed";
 import { Container } from "@/components/ui/container";
 import { LeadBlock } from "@/components/ui/lead-block";
-import { isLocale, locales, localeHrefLang } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
 import { getNewsRepository } from "@/lib/news/repository";
+import { strings } from "@/lib/strings";
 import { categorySlugs, isCategorySlug } from "@/lib/news/types";
 
 /**
@@ -31,10 +30,6 @@ const GRID_INITIAL = 9;
 export const dynamicParams = false;
 
 /**
- * The parent `[locale]` layout generates the three locales and this runs once
- * for each of them. The slugs are the same every time - they are URL segments,
- * not display names - so the locale it is called with is not read.
- *
  * These five are the only paths this segment claims. `about`, `authors`,
  * `news`, `popular` and `search` are static siblings, and a static segment
  * wins over a dynamic one, so none of them can be shadowed from here.
@@ -43,32 +38,22 @@ export function generateStaticParams() {
   return categorySlugs.map((category) => ({ category }));
 }
 
-type CategoryParams = {
-  params: Promise<{ locale: string; category: string }>;
-};
+type CategoryParams = { params: Promise<{ category: string }> };
 
 export async function generateMetadata({
   params,
 }: CategoryParams): Promise<Metadata> {
-  const { locale, category } = await params;
-  if (!isLocale(locale) || !isCategorySlug(category)) notFound();
+  const { category } = await params;
+  if (!isCategorySlug(category)) notFound();
 
-  const dict = await getDictionary(locale);
   // The heading carries the design's hash prefix; the browser tab should not.
-  const name = dict.nav[category];
-  const description = dict.category.description.replace("{category}", name);
+  const name = strings.nav[category];
+  const description = strings.category.description.replace("{category}", name);
 
   return {
     title: name,
     description,
-    alternates: {
-      canonical: `/${locale}/${category}/`,
-      // Category slugs are URL segments rather than translated words, so the
-      // same path serves every locale.
-      languages: Object.fromEntries(
-        locales.map((l) => [localeHrefLang[l], `/${l}/${category}/`]),
-      ),
-    },
+    alternates: { canonical: `/${category}/` },
     openGraph: { type: "website", title: name, description },
   };
 }
@@ -92,15 +77,14 @@ export async function generateMetadata({
  * and nothing that would compete with it.
  */
 export default async function CategoryPage({ params }: CategoryParams) {
-  const { locale, category } = await params;
-  if (!isLocale(locale) || !isCategorySlug(category)) notFound();
+  const { category } = await params;
+  if (!isCategorySlug(category)) notFound();
 
-  const dict = await getDictionary(locale);
   const repo = getNewsRepository();
 
   const [articles, statOfDay] = await Promise.all([
-    repo.getByCategory(locale, category, FEED_LIMIT),
-    repo.getStatOfTheDay(locale),
+    repo.getByCategory(category, FEED_LIMIT),
+    repo.getStatOfTheDay(),
   ]);
 
   const [lead, ...rest] = articles;
@@ -116,12 +100,12 @@ export default async function CategoryPage({ params }: CategoryParams) {
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       <main className="flex-1 py-gutter">
         <Container>
@@ -137,7 +121,7 @@ export default async function CategoryPage({ params }: CategoryParams) {
               same type scale, hash prefix and all.
             */}
             <h1 className="text-title-sm font-medium text-ink-900 lg:text-title-lg">
-              #{dict.nav[category]}
+              #{strings.nav[category]}
             </h1>
 
             {/*
@@ -150,31 +134,26 @@ export default async function CategoryPage({ params }: CategoryParams) {
               <div className="flex min-w-0 flex-col gap-section">
                 {lead ? (
                   <>
-                    <LeadBlock
-                      lead={lead}
-                      secondary={secondary}
-                      locale={locale}
-                    />
+                    <LeadBlock lead={lead} secondary={secondary} />
 
                     {statOfDay ? (
                       <NumberOfDay
                         stat={statOfDay}
-                        label={dict.sections.numberOfDay}
+                        label={strings.sections.numberOfDay}
                       />
                     ) : null}
 
                     {grid.length > 0 ? (
                       <ArticleFeed
                         articles={grid}
-                        locale={locale}
                         initial={GRID_INITIAL}
-                        moreLabel={dict.sections.showMore}
+                        moreLabel={strings.sections.showMore}
                       />
                     ) : null}
                   </>
                 ) : (
                   <p className="text-body text-ink-600 lg:text-lead">
-                    {dict.category.empty}
+                    {strings.category.empty}
                   </p>
                 )}
               </div>
@@ -188,7 +167,7 @@ export default async function CategoryPage({ params }: CategoryParams) {
                 <AdsSlot
                   width={300}
                   height={450}
-                  label={dict.a11y.advertising}
+                  label={strings.a11y.advertising}
                   className="w-full"
                 />
               </aside>
@@ -197,7 +176,7 @@ export default async function CategoryPage({ params }: CategoryParams) {
         </Container>
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

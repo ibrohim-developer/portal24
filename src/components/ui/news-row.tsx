@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { TextBlock } from "./text-block";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Thumbnail beside the headline rather than above it - the arrangement the main
@@ -16,12 +15,10 @@ import type { Locale } from "@/i18n/config";
  */
 export function NewsRow({
   article,
-  locale,
 }: {
   article: Article;
-  locale: Locale;
 }) {
-  const href = `/${locale}/news/${article.slug}/`;
+  const href = `/news/${article.slug}/`;
 
   return (
     <article className="group flex gap-3 border-b border-hairline pb-gutter">
@@ -47,7 +44,6 @@ export function NewsRow({
       <div className="min-w-0 flex-1">
         <TextBlock
           article={article}
-          locale={locale}
           size="md"
           titleWeight="normal"
         />

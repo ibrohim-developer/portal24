@@ -1,8 +1,8 @@
+import { BlockButton } from "@/components/ui/block-button";
 import { NewsCard } from "@/components/ui/news-card";
 import { NewsRow } from "@/components/ui/news-row";
 import { SectionHead } from "@/components/ui/section-head";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * The three arrangements the main page's titled feeds come in.
@@ -28,14 +28,12 @@ export function FeedBlock({
   href,
   seeAllLabel,
   articles,
-  locale,
   layout,
 }: {
   title: string;
   href: string;
   seeAllLabel: string;
   articles: Article[];
-  locale: Locale;
   layout: FeedLayout;
 }) {
   if (articles.length === 0) return null;
@@ -49,27 +47,31 @@ export function FeedBlock({
       {layout === "featured" ? (
         <div className="flex flex-col gap-gutter lg:grid lg:grid-lead lg:items-start">
           <div className="min-w-0">
-            <NewsCard article={first} locale={locale} size="lg" />
+            <NewsCard article={first} size="lg" />
           </div>
           <div className="grid min-w-0 gap-gutter sm:grid-cols-2 lg:grid-cols-1">
             {rest.slice(0, 2).map((article) => (
-              <NewsCard key={article.id} article={article} locale={locale} />
+              <NewsCard key={article.id} article={article} />
             ))}
           </div>
         </div>
       ) : layout === "rows" ? (
         <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2">
           {articles.map((article) => (
-            <NewsRow key={article.id} article={article} locale={locale} />
+            <NewsRow key={article.id} article={article} />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
-            <NewsCard key={article.id} article={article} locale={locale} />
+            <NewsCard key={article.id} article={article} />
           ))}
         </div>
       )}
+
+      {/* Mobile stand-in for the head's see-all link. Sits in the same
+          flex column, so it lands one `gap-head` under the last card. */}
+      <BlockButton href={href} label={seeAllLabel} />
     </section>
   );
 }

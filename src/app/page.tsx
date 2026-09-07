@@ -1,5 +1,3 @@
-import { notFound } from "next/navigation";
-
 import { HighlightsRow } from "@/components/home/highlights-row";
 import { NumberOfDay } from "@/components/home/number-of-day";
 import { PopularSidebar } from "@/components/home/popular-sidebar";
@@ -10,10 +8,9 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
 import { FeedBlock, type FeedLayout } from "@/components/ui/feed-block";
 import { LeadBlock } from "@/components/ui/lead-block";
-import { isLocale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
 import { HOME_CATEGORY_BLOCKS } from "@/lib/categories";
 import { getNewsRepository } from "@/lib/news/repository";
+import { strings } from "@/lib/strings";
 
 /** Lead story plus the two cards beside it. */
 const LEAD_LIMIT = 3;
@@ -39,15 +36,7 @@ const CARDS_PER_LAYOUT: Record<FeedLayout, number> = {
   rows: 6,
 };
 
-export default async function HomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
+export default async function HomePage() {
   const repo = getNewsRepository();
 
   // Fetched together rather than in sequence - under static export this only
@@ -63,20 +52,16 @@ export default async function HomePage({
     // Over-fetched because the rail is filtered against everything above it:
     // a popular story is usually also a recent one, so asking for exactly
     // RAIL_LIMIT would leave the rail short once the overlap is removed.
-    repo.getTopStories(locale, LEAD_LIMIT + POPULAR_LIMIT + RAIL_LIMIT),
-    repo.getPopular(locale, POPULAR_LIMIT),
-    repo.getStatOfTheDay(locale),
-    repo.getRecentStats(locale, 6),
-    repo.getHighlights(locale, 6),
+    repo.getTopStories(LEAD_LIMIT + POPULAR_LIMIT + RAIL_LIMIT),
+    repo.getPopular(POPULAR_LIMIT),
+    repo.getStatOfTheDay(),
+    repo.getRecentStats(6),
+    repo.getHighlights(6),
     Promise.all(
       HOME_CATEGORY_BLOCKS.map(async ({ slug, layout }) => ({
         slug,
         layout,
-        articles: await repo.getByCategory(
-          locale,
-          slug,
-          CARDS_PER_LAYOUT[layout],
-        ),
+        articles: await repo.getByCategory(slug, CARDS_PER_LAYOUT[layout]),
       })),
     ),
   ]);
@@ -104,11 +89,10 @@ export default async function HomePage({
   }: (typeof categoryFeeds)[number]) => (
     <FeedBlock
       key={slug}
-      title={`#${dict.nav[slug]}`}
-      href={`/${locale}/${slug}/`}
-      seeAllLabel={dict.sections.seeAll}
+      title={`#${strings.nav[slug]}`}
+      href={`/${slug}/`}
+      seeAllLabel={strings.sections.seeAll}
       articles={articles}
-      locale={locale}
       layout={layout}
     />
   );
@@ -120,12 +104,12 @@ export default async function HomePage({
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       {/*
         The section rhythm lives on <main> rather than inside one Container,
@@ -147,21 +131,20 @@ export default async function HomePage({
         <div className="flex flex-col gap-section lg:grid lg:grid-rail lg:items-start lg:gap-gutter">
           <div className="flex min-w-0 flex-col gap-section">
             {lead ? (
-              <LeadBlock lead={lead} secondary={secondary} locale={locale} />
+              <LeadBlock lead={lead} secondary={secondary} />
             ) : null}
 
             {statOfDay ? (
-              <NumberOfDay stat={statOfDay} label={dict.sections.numberOfDay} />
+              <NumberOfDay stat={statOfDay} label={strings.sections.numberOfDay} />
             ) : null}
 
             {/* The Figma opens the run of blocks with #Популярное, not with
                 the first category. */}
             <FeedBlock
               articles={popular}
-              title={dict.sections.popular}
-              href={`/${locale}/popular/`}
-              seeAllLabel={dict.sections.seeAll}
-              locale={locale}
+              title={strings.sections.popular}
+              href="/popular/"
+              seeAllLabel={strings.sections.seeAll}
               layout="rows"
             />
 
@@ -171,15 +154,27 @@ export default async function HomePage({
           <aside className="flex w-full min-w-0 flex-col gap-section">
             <PopularSidebar
               articles={fresh}
-              locale={locale}
-              title={dict.sections.fresh}
+              title={strings.sections.fresh}
             />
-            <AdsSlot
-              width={300}
-              height={450}
-              label={dict.a11y.advertising}
-              className="w-full"
-            />
+            {/*
+              Hidden on mobile, as the ad rail is on every other page - but
+              here the rail also carries the fresh list, which the phone layout
+              keeps, so only the ad is dropped and not the whole <aside>.
+              Stacked into the single column it would otherwise put a 450px
+              block mid-page, between that list and the numbers carousel.
+
+              The wrapper does the hiding because AdsSlot is itself `flex`,
+              and `cn` is a plain join with no tailwind-merge to settle which
+              display utility would win on the slot itself.
+            */}
+            <div className="hidden lg:block">
+              <AdsSlot
+                width={300}
+                height={450}
+                label={strings.a11y.advertising}
+                className="w-full"
+              />
+            </div>
           </aside>
           </div>
         </Container>
@@ -187,10 +182,9 @@ export default async function HomePage({
         {/* Full-bleed, so it sits outside Container - see the component. */}
         <StatsRow
           stats={recentStats}
-          title={dict.sections.recentNumbers}
-          locale={locale}
-          prevLabel={dict.a11y.prev}
-          nextLabel={dict.a11y.next}
+          title={strings.sections.recentNumbers}
+          prevLabel={strings.a11y.prev}
+          nextLabel={strings.a11y.next}
         />
 
         <Container>
@@ -206,13 +200,13 @@ export default async function HomePage({
         {/* Closes the page, under the last category block. Full-bleed too. */}
         <HighlightsRow
           highlights={highlights}
-          title={dict.sections.minute}
-          prevLabel={dict.a11y.prev}
-          nextLabel={dict.a11y.next}
+          title={strings.sections.minute}
+          prevLabel={strings.a11y.prev}
+          nextLabel={strings.a11y.next}
         />
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

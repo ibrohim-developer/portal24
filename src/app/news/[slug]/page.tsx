@@ -10,31 +10,20 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
-import { isLocale, locales, localeHrefLang } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
 import { getNewsRepository } from "@/lib/news/repository";
 import type { ArticleDetail } from "@/lib/news/types";
+import { strings } from "@/lib/strings";
 
 /** Every article is built ahead of time, so an unknown slug is a 404, not a render. */
 export const dynamicParams = false;
 
-/**
- * The parent `[locale]` layout generates the three locales; this fills in the
- * slugs for each one, so it is called once per locale with that locale's
- * params. `params` here is a plain object - only page props are promises.
- */
-export async function generateStaticParams({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
-  if (!isLocale(locale)) return [];
-
-  const slugs = await getNewsRepository().getSlugs(locale);
+/** Every published slug, so the export can render one file per story. */
+export async function generateStaticParams() {
+  const slugs = await getNewsRepository().getSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
-type ArticleParams = { params: Promise<{ locale: string; slug: string }> };
+type ArticleParams = { params: Promise<{ slug: string }> };
 
 /**
  * The 800 + 20 + 300 column pair, shared by the article and the feeds below it
@@ -58,27 +47,17 @@ function summarise(article: ArticleDetail): string {
 export async function generateMetadata({
   params,
 }: ArticleParams): Promise<Metadata> {
-  const { locale, slug } = await params;
-  if (!isLocale(locale)) notFound();
+  const { slug } = await params;
 
-  const article = await getNewsRepository().getArticle(locale, slug);
+  const article = await getNewsRepository().getArticle(slug);
   if (!article) notFound();
 
   const description = summarise(article);
-  const path = `/${locale}/news/${slug}/`;
 
   return {
     title: article.title,
     description,
-    alternates: {
-      canonical: path,
-      // The slug is locale-independent today because the fixtures share one
-      // set of stories. Once the CMS gives each translation its own slug, this
-      // has to resolve them per locale rather than reusing `slug`.
-      languages: Object.fromEntries(
-        locales.map((l) => [localeHrefLang[l], `/${l}/news/${slug}/`]),
-      ),
-    },
+    alternates: { canonical: `/news/${slug}/` },
     openGraph: {
       type: "article",
       title: article.title,
@@ -92,19 +71,17 @@ export async function generateMetadata({
 }
 
 export default async function ArticlePage({ params }: ArticleParams) {
-  const { locale, slug } = await params;
-  if (!isLocale(locale)) notFound();
+  const { slug } = await params;
 
-  const dict = await getDictionary(locale);
   const repo = getNewsRepository();
 
-  const article = await repo.getArticle(locale, slug);
+  const article = await repo.getArticle(slug);
   if (!article) notFound();
 
   const [related, sameCategory, popular] = await Promise.all([
-    repo.getRelated(locale, slug, 6),
-    repo.getByCategory(locale, article.category.slug, 3),
-    repo.getPopular(locale, 6),
+    repo.getRelated(slug, 6),
+    repo.getByCategory(article.category.slug, 3),
+    repo.getPopular(6),
   ]);
 
   return (
@@ -114,12 +91,12 @@ export default async function ArticlePage({ params }: ArticleParams) {
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       <main className="flex-1 py-gutter">
         <Container>
@@ -141,8 +118,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
               <div className="lg:col-start-1 lg:row-start-1">
                 <ArticleHead
                   article={article}
-                  locale={locale}
-                  updatedLabel={dict.article.updated}
+                  updatedLabel={strings.article.updated}
                 />
               </div>
 
@@ -171,7 +147,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
                 <AdsSlot
                   width={300}
                   height={450}
-                  label={dict.a11y.advertising}
+                  label={strings.a11y.advertising}
                   className="w-full"
                 />
               </aside>
@@ -183,16 +159,14 @@ export default async function ArticlePage({ params }: ArticleParams) {
               {article.author ? (
                 <AuthorBlock
                   author={article.author}
-                  locale={locale}
-                  label={dict.article.authorLabel}
-                  cta={dict.article.authorCta}
+                  label={strings.article.authorLabel}
+                  cta={strings.article.authorCta}
                 />
               ) : null}
 
               <RelatedBlock
-                title={dict.article.readAlso}
+                title={strings.article.readAlso}
                 articles={related}
-                locale={locale}
                 layout="grid"
               />
 
@@ -202,23 +176,21 @@ export default async function ArticlePage({ params }: ArticleParams) {
                 head in regular weight where every other head is medium.
               */}
               <RelatedBlock
-                title={dict.article.dailyPick}
-                href={`/${locale}/${article.category.slug}/`}
-                seeAllLabel={dict.sections.seeAll}
+                title={strings.article.dailyPick}
+                href={`/${article.category.slug}/`}
+                seeAllLabel={strings.sections.seeAll}
                 articles={sameCategory}
-                locale={locale}
                 layout="feature"
                 titleWeight="normal"
               />
 
               <RelatedBlock
-                title={dict.sections.fresh}
-                href={`/${locale}/popular/`}
-                seeAllLabel={dict.sections.seeAll}
+                title={strings.sections.fresh}
+                href="/popular/"
+                seeAllLabel={strings.sections.seeAll}
                 articles={popular}
-                locale={locale}
                 layout="text"
-                moreLabel={dict.sections.showMore}
+                moreLabel={strings.sections.showMore}
               />
               </div>
             </div>
@@ -226,7 +198,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
         </Container>
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

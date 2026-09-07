@@ -4,7 +4,6 @@ import Link from "next/link";
 import { TextBlock, type TextBlockSize } from "./text-block";
 import { cn } from "@/lib/cn";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Cover image + TextBlock, matching the Figma News component set (1852:14464).
@@ -22,14 +21,12 @@ const IMAGE_ASPECT: Record<TextBlockSize, string> = {
 
 export function NewsCard({
   article,
-  locale,
   size = "md",
   priority = false,
   showCategory = true,
   highlight,
 }: {
   article: Article;
-  locale: Locale;
   size?: TextBlockSize;
   /** Set on the lead story only - it is the LCP element. */
   priority?: boolean;
@@ -38,7 +35,7 @@ export function NewsCard({
   /** Passed through to the TextBlock; set by the search results grid. */
   highlight?: string;
 }) {
-  const href = `/${locale}/news/${article.slug}/`;
+  const href = `/news/${article.slug}/`;
 
   return (
     <article className="group flex flex-col gap-gutter">
@@ -63,7 +60,6 @@ export function NewsCard({
 
       <TextBlock
         article={article}
-        locale={locale}
         size={size}
         showCategory={showCategory}
         highlight={highlight}

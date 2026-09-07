@@ -6,20 +6,17 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 import { NewsCard } from "@/components/ui/news-card";
 import { SearchIcon } from "@/components/ui/icons";
-import type { Dictionary } from "@/i18n/get-dictionary";
-import type { Locale } from "@/i18n/config";
 import { CATEGORY_TINT } from "@/lib/categories";
 import { cn } from "@/lib/cn";
+import { strings } from "@/lib/strings";
 import { matchArticles, SEARCH_SUGGESTIONS } from "@/lib/news/search";
 import type { Article } from "@/lib/news/types";
 
 /** Search page heading, at the scale the other pages' titles use. */
 const HEADING = "text-title-sm font-medium text-ink-900 lg:text-title-lg";
 
-function href(locale: Locale, query: string): string {
-  return query
-    ? `/${locale}/search/?q=${encodeURIComponent(query)}`
-    : `/${locale}/search/`;
+function href(query: string): string {
+  return query ? `/search/?q=${encodeURIComponent(query)}` : "/search/";
 }
 
 /**
@@ -38,14 +35,10 @@ function href(locale: Locale, query: string): string {
  * inside a `<Suspense>` boundary; without one the production build fails.
  */
 export function SearchView({
-  locale,
-  dict,
   index,
   popular,
   rail,
 }: {
-  locale: Locale;
-  dict: Dictionary;
   index: Article[];
   /** The "Популярное за неделю" cards - lead arrangement plus its grid. */
   popular: ReactNode;
@@ -70,7 +63,7 @@ export function SearchView({
     event.preventDefault();
     // `replace`, not `push`: refining a query should not stack a history entry
     // per attempt between the page and wherever the reader came from.
-    router.replace(href(locale, inputRef.current?.value.trim() ?? ""), {
+    router.replace(href(inputRef.current?.value.trim() ?? ""), {
       scroll: false,
     });
   }
@@ -87,12 +80,12 @@ export function SearchView({
       */}
       <form
         role="search"
-        action={`/${locale}/search/`}
+        action="/search/"
         onSubmit={submit}
         className="relative"
       >
         <label htmlFor="search-input" className="sr-only">
-          {dict.nav.search}
+          {strings.nav.search}
         </label>
         <input
           ref={inputRef}
@@ -101,12 +94,12 @@ export function SearchView({
           name="q"
           defaultValue={query}
           autoComplete="off"
-          placeholder={dict.nav.searchPlaceholder}
+          placeholder={strings.nav.searchPlaceholder}
           className="h-12 w-full bg-hairline pr-14 pl-4 text-body text-ink-900 outline-none placeholder:text-ink-400 focus-visible:ring-1 focus-visible:ring-accent lg:h-16 lg:pr-14 lg:pl-5 lg:text-lead"
         />
         <button
           type="submit"
-          aria-label={dict.nav.search}
+          aria-label={strings.nav.search}
           className="absolute top-0 right-0 flex h-12 w-12 items-center justify-center text-ink-900 transition-colors hover:text-accent lg:h-16 lg:w-12"
         >
           <SearchIcon />
@@ -117,11 +110,11 @@ export function SearchView({
           and each one carries its category's TextBlock tint. */}
       <ul className="mt-gutter flex flex-wrap gap-3">
         {SEARCH_SUGGESTIONS.map(({ key, category }) => {
-          const label = dict.search.suggestions[key];
+          const label = strings.search.suggestions[key];
           return (
             <li key={key}>
               <Link
-                href={href(locale, label)}
+                href={href(label)}
                 className={`${CATEGORY_TINT[category]} flex items-center px-4 py-1.5 text-caption text-ink-900 transition-opacity hover:opacity-70`}
               >
                 {label}
@@ -138,14 +131,14 @@ export function SearchView({
       <div aria-live="polite" className="mt-10 flex flex-col">
         {found ? (
           <h2 className={HEADING}>
-            {dict.search.results.replace("{query}", query)}
+            {strings.search.results.replace("{query}", query)}
           </h2>
         ) : query === "" ? null : (
           <div className="flex flex-col gap-2">
             <h2 className={HEADING}>
-              {dict.search.empty.replace("{query}", query)}
+              {strings.search.empty.replace("{query}", query)}
             </h2>
-            <p className="text-body text-ink-600">{dict.search.emptyHint}</p>
+            <p className="text-body text-ink-600">{strings.search.emptyHint}</p>
           </div>
         )}
 
@@ -154,7 +147,7 @@ export function SearchView({
             since it answers a different question than the one that failed. */}
         {found ? null : (
           <h2 className={cn(HEADING, query !== "" && "mt-section")}>
-            {dict.search.popularTitle}
+            {strings.search.popularTitle}
           </h2>
         )}
 
@@ -166,7 +159,6 @@ export function SearchView({
                   <NewsCard
                     key={article.id}
                     article={article}
-                    locale={locale}
                     highlight={query}
                   />
                 ))}

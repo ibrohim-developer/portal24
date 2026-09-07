@@ -57,12 +57,15 @@
   --font-sans: var(--font-portal), ui-sans-serif, system-ui, sans-serif;
 
   /*
-   * The header's desktop row - six category links, "О нас", three language
-   * codes, the Telegram CTA and the search square - measures 1107px of content
-   * in the widest locale (ru), so it needs a 1267px viewport once the 80px
-   * gutters are paid for. `lg` (1024) is 243px short of that, which is why the
-   * row used to collide with itself there. Below this width the header shows
-   * the mobile row and its burger instead; nothing else switches here.
+   * The header's desktop row - six category links, "Biz haqimizda", the
+   * Telegram CTA and the search square - does not fit a 1024 viewport once the
+   * 80px gutters are paid for, which is why it used to collide with itself at
+   * `lg`. Below this width the header shows the mobile row and its burger
+   * instead; nothing else switches here.
+   *
+   * The number was measured when the row also carried three language codes, so
+   * it is now conservative by their width. Lowering it is a design call, not a
+   * cleanup: it decides which header a 1024-1320 viewport gets.
    */
   --breakpoint-nav: 1320px;
 }

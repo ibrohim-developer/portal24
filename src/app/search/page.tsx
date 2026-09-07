@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -9,9 +8,8 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
 import { LeadBlock } from "@/components/ui/lead-block";
 import { NewsCard } from "@/components/ui/news-card";
-import { isLocale, locales, localeHrefLang } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
 import { getNewsRepository } from "@/lib/news/repository";
+import { strings } from "@/lib/strings";
 
 /**
  * The "Популярное за неделю" block: the lead arrangement (one story plus the
@@ -20,30 +18,14 @@ import { getNewsRepository } from "@/lib/news/repository";
  */
 const POPULAR_LIMIT = 6;
 
-type LocaleParams = { params: Promise<{ locale: string }> };
-
-export async function generateMetadata({
-  params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
-
-  return {
-    title: dict.search.title,
-    description: dict.search.description,
-    alternates: {
-      canonical: `/${locale}/search/`,
-      languages: Object.fromEntries(
-        locales.map((l) => [localeHrefLang[l], `/${l}/search/`]),
-      ),
-    },
-    // A results page is not a landing page: the built HTML carries no query,
-    // so anything indexed here would be the empty state.
-    robots: { index: false, follow: true },
-  };
-}
+export const metadata: Metadata = {
+  title: strings.search.title,
+  description: strings.search.description,
+  alternates: { canonical: "/search/" },
+  // A results page is not a landing page: the built HTML carries no query,
+  // so anything indexed here would be the empty state.
+  robots: { index: false, follow: true },
+};
 
 /**
  * Search (Figma "Web" page, 1934:21889) - where the header's search button
@@ -58,16 +40,12 @@ export async function generateMetadata({
  * The design opens on the field, not on a page title: there is no visible
  * "Поиск" heading above it, so the h1 here is for the document outline only.
  */
-export default async function SearchPage({ params }: LocaleParams) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
+export default async function SearchPage() {
   const repo = getNewsRepository();
 
   const [index, popular] = await Promise.all([
-    repo.getSearchIndex(locale),
-    repo.getPopular(locale, POPULAR_LIMIT),
+    repo.getSearchIndex(),
+    repo.getPopular(POPULAR_LIMIT),
   ]);
 
   const [lead, ...rest] = popular;
@@ -81,23 +59,21 @@ export default async function SearchPage({ params }: LocaleParams) {
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       <main className="flex-1 py-gutter">
         <Container>
-          <h1 className="sr-only">{dict.search.title}</h1>
+          <h1 className="sr-only">{strings.search.title}</h1>
 
           <Suspense
             fallback={<div className="h-12 w-full bg-hairline lg:h-16" />}
           >
             <SearchView
-              locale={locale}
-              dict={dict}
               index={index}
               popular={
                 lead ? (
@@ -107,7 +83,6 @@ export default async function SearchPage({ params }: LocaleParams) {
                     <LeadBlock
                       lead={lead}
                       secondary={secondary}
-                      locale={locale}
                     />
 
                     {grid.length > 0 ? (
@@ -116,7 +91,6 @@ export default async function SearchPage({ params }: LocaleParams) {
                           <NewsCard
                             key={article.id}
                             article={article}
-                            locale={locale}
                           />
                         ))}
                       </div>
@@ -128,7 +102,7 @@ export default async function SearchPage({ params }: LocaleParams) {
                 <AdsSlot
                   width={300}
                   height={450}
-                  label={dict.a11y.advertising}
+                  label={strings.a11y.advertising}
                   className="w-full"
                 />
               }
@@ -137,7 +111,7 @@ export default async function SearchPage({ params }: LocaleParams) {
         </Container>
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

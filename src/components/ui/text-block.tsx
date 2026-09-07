@@ -5,7 +5,6 @@ import { CATEGORY_TINT } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
 import { highlightParts } from "@/lib/news/search";
 import type { Article } from "@/lib/news/types";
-import type { Locale } from "@/i18n/config";
 
 export type TextBlockSize = "lg" | "md";
 
@@ -17,7 +16,6 @@ export type TextBlockSize = "lg" | "md";
  */
 export function TextBlock({
   article,
-  locale,
   size = "md",
   titleWeight = "medium",
   tinted = false,
@@ -26,7 +24,6 @@ export function TextBlock({
   highlight,
 }: {
   article: Article;
-  locale: Locale;
   size?: TextBlockSize;
   /**
    * The thumbnail-row cards set their headline in regular weight; every card
@@ -79,7 +76,7 @@ export function TextBlock({
         )}
       >
         <Link
-          href={`/${locale}/news/${article.slug}/`}
+          href={`/news/${article.slug}/`}
           className="transition-colors hover:text-accent"
         >
           {highlight
@@ -98,7 +95,7 @@ export function TextBlock({
 
       <div className="flex items-center gap-2 overflow-hidden text-caption text-ink-400">
         <time dateTime={article.publishedAt} className="whitespace-nowrap">
-          {formatArticleDate(article.publishedAt, locale)}
+          {formatArticleDate(article.publishedAt)}
         </time>
         {article.author ? (
           <>

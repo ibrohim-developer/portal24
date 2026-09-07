@@ -73,8 +73,7 @@ export type SocialMark = {
  * Network -> mark and brand label, for surfaces that are handed a network name
  * by the data rather than choosing one: the author page's contact buttons.
  *
- * Labels are brand names, so they are the same in all three locales and stay
- * out of the dictionaries.
+ * Labels are brand names, so they are not copy and stay out of `strings`.
  */
 export const SOCIAL_MARKS: Record<SocialNetwork, SocialMark> = {
   instagram: { label: "Instagram", Icon: InstagramIcon },

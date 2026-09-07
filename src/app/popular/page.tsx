@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -7,9 +6,8 @@ import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
 import { LeadBlock } from "@/components/ui/lead-block";
 import { NewsCard } from "@/components/ui/news-card";
-import { isLocale, locales, localeHrefLang } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
 import { getNewsRepository } from "@/lib/news/repository";
+import { strings } from "@/lib/strings";
 
 /**
  * How many popular stories the page renders.
@@ -22,33 +20,17 @@ import { getNewsRepository } from "@/lib/news/repository";
  */
 const FEED_LIMIT = 15;
 
-type LocaleParams = { params: Promise<{ locale: string }> };
-
-export async function generateMetadata({
-  params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
-
-  return {
-    // The heading carries the design's hash prefix; the browser tab should not.
-    title: dict.nav.popular,
-    description: dict.popular.description,
-    alternates: {
-      canonical: `/${locale}/popular/`,
-      languages: Object.fromEntries(
-        locales.map((l) => [localeHrefLang[l], `/${l}/popular/`]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      title: dict.nav.popular,
-      description: dict.popular.description,
-    },
-  };
-}
+export const metadata: Metadata = {
+  // The heading carries the design's hash prefix; the browser tab should not.
+  title: strings.nav.popular,
+  description: strings.popular.description,
+  alternates: { canonical: "/popular/" },
+  openGraph: {
+    type: "website",
+    title: strings.nav.popular,
+    description: strings.popular.description,
+  },
+};
 
 /**
  * Popular News (Figma "Web" page, 1981:16650) - the destination of every
@@ -64,14 +46,10 @@ export async function generateMetadata({
  * before this page was built, so every measurement here is carried over from
  * the main and author pages rather than taken from 1981:16650.
  */
-export default async function PopularPage({ params }: LocaleParams) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const dict = await getDictionary(locale);
+export default async function PopularPage() {
   const repo = getNewsRepository();
 
-  const popular = await repo.getPopular(locale, FEED_LIMIT);
+  const popular = await repo.getPopular(FEED_LIMIT);
 
   const [lead, ...rest] = popular;
   // The lead arrangement takes the first story plus the two beside it; the
@@ -86,12 +64,12 @@ export default async function PopularPage({ params }: LocaleParams) {
         <AdsSlot
           width={1280}
           height={200}
-          label={dict.a11y.advertising}
+          label={strings.a11y.advertising}
           className="w-full"
         />
       </Container>
 
-      <SiteHeader locale={locale} dict={dict} />
+      <SiteHeader />
 
       <main className="flex-1 py-gutter">
         <Container>
@@ -112,7 +90,7 @@ export default async function PopularPage({ params }: LocaleParams) {
               the same type scale.
             */}
             <h1 className="text-title-sm font-medium text-ink-900 lg:text-title-lg">
-              {dict.sections.popular}
+              {strings.sections.popular}
             </h1>
 
             <div className="flex flex-col lg:grid lg:grid-rail lg:items-start lg:gap-gutter">
@@ -124,7 +102,6 @@ export default async function PopularPage({ params }: LocaleParams) {
                     <LeadBlock
                       lead={lead}
                       secondary={secondary}
-                      locale={locale}
                     />
 
                     {grid.length > 0 ? (
@@ -133,7 +110,6 @@ export default async function PopularPage({ params }: LocaleParams) {
                           <NewsCard
                             key={article.id}
                             article={article}
-                            locale={locale}
                           />
                         ))}
                       </div>
@@ -141,7 +117,7 @@ export default async function PopularPage({ params }: LocaleParams) {
                   </>
                 ) : (
                   <p className="text-body text-ink-600 lg:text-lead">
-                    {dict.popular.empty}
+                    {strings.popular.empty}
                   </p>
                 )}
               </div>
@@ -155,7 +131,7 @@ export default async function PopularPage({ params }: LocaleParams) {
                 <AdsSlot
                   width={300}
                   height={450}
-                  label={dict.a11y.advertising}
+                  label={strings.a11y.advertising}
                   className="w-full"
                 />
               </aside>
@@ -164,7 +140,7 @@ export default async function PopularPage({ params }: LocaleParams) {
         </Container>
       </main>
 
-      <SiteFooter locale={locale} dict={dict} />
+      <SiteFooter />
     </>
   );
 }

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { SOCIAL_MARKS } from "@/components/ui/social";
 import { cn } from "@/lib/cn";
 import { CATEGORY_TINT } from "@/lib/categories";
+import { strings } from "@/lib/strings";
 import type { AuthorProfile } from "@/lib/news/types";
-import type { Dictionary } from "@/i18n/get-dictionary";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Profile header on the author page (Figma 1981:17549).
@@ -30,15 +29,7 @@ import type { Locale } from "@/i18n/config";
  * is the author's own role, falling back to a plain "Автор" when the CMS has
  * none.
  */
-export function AuthorHero({
-  author,
-  locale,
-  dict,
-}: {
-  author: AuthorProfile;
-  locale: Locale;
-  dict: Dictionary["author"];
-}) {
+export function AuthorHero({ author }: { author: AuthorProfile }) {
   // Blank lines in the CMS field are paragraph breaks. The design runs them
   // tight against each other, with no more space than a wrapped line gets.
   const bio = author.bio?.split(/\n+/).filter(Boolean) ?? [];
@@ -57,7 +48,7 @@ export function AuthorHero({
       ) : null}
 
       <div className="flex min-w-0 flex-col">
-        <p className="text-caption text-ink-600">{author.role ?? dict.label}</p>
+        <p className="text-caption text-ink-600">{author.role ?? strings.author.label}</p>
 
         <h1 className="mt-2 text-title-sm font-medium text-ink-900 lg:text-title-lg">
           {author.name}
@@ -72,7 +63,7 @@ export function AuthorHero({
             {author.categories.map((category) => (
               <Link
                 key={category.slug}
-                href={`/${locale}/${category.slug}/`}
+                href={`/${category.slug}/`}
                 className={cn(
                   "px-2 py-1 text-caption text-ink-600 transition-opacity hover:opacity-70",
                   CATEGORY_TINT[category.slug],
@@ -87,7 +78,7 @@ export function AuthorHero({
         {bio.length > 0 ? (
           <section className="mt-6">
             <h2 className="text-body font-medium text-ink-900 lg:text-lead">
-              {dict.bioTitle}
+              {strings.author.bioTitle}
             </h2>
 
             <div className="mt-2 text-body text-ink-900">
@@ -101,7 +92,7 @@ export function AuthorHero({
         {author.contacts.length > 0 ? (
           <section className="mt-7">
             <h2 className="text-body font-medium text-ink-900 lg:text-lead">
-              {dict.contactsTitle}
+              {strings.author.contactsTitle}
             </h2>
 
             {/*

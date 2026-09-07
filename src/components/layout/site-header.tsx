@@ -2,13 +2,11 @@ import Link from "next/link";
 
 import { BurgerMenu } from "./burger-menu";
 import { Container } from "@/components/ui/container";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Logo } from "@/components/ui/logo";
 import { SearchIcon } from "@/components/ui/icons";
 import { TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
 import { NAV_ITEMS } from "@/lib/categories";
-import type { Locale } from "@/i18n/config";
-import type { Dictionary } from "@/i18n/get-dictionary";
+import { strings } from "@/lib/strings";
 
 /**
  * Header from the Figma nav (2232:15466): 80px tall, 80px side padding.
@@ -17,42 +15,36 @@ import type { Dictionary } from "@/i18n/get-dictionary";
  * instance on the page, so they are not rendered here.
  *
  * The two breakpoints carry different controls, not a subset of one another
- * (2218:17584): desktop takes the category row, "О нас", the Telegram CTA and
- * a search button on a tinted square; mobile keeps search and the burger, both
- * as bare marks with no tint behind them.
+ * (2218:17584): desktop takes the category row, "Biz haqimizda", the Telegram
+ * CTA and a search button on a tinted square; mobile keeps search and the
+ * burger, both as bare marks with no tint behind them.
  *
- * The language switcher is the one control both rows share - the same popover
- * on the active code, drawn with a chevron on desktop and bare on mobile. The
- * desktop design lists all three codes instead; see the switcher.
+ * The design also draws a language switcher on both rows. The site publishes
+ * in Uzbek only, so there is nothing for it to switch between and it is not
+ * rendered - a deliberate departure from the file.
  *
  * They switch at `nav` (1320) rather than at `lg`, because the desktop row is
  * a fixed amount of text that does not fit a 1024 viewport - see the token.
  */
-export function SiteHeader({
-  locale,
-  dict,
-}: {
-  locale: Locale;
-  dict: Dictionary;
-}) {
+export function SiteHeader() {
   return (
     <header className="border-b border-hairline">
       <Container>
         <div className="flex h-20 items-center justify-between gap-6">
         <div className="flex items-center gap-10">
-          <Logo locale={locale} label={dict.a11y.home} />
+          <Logo label={strings.a11y.home} />
 
           <nav
-            aria-label={dict.a11y.mainNav}
+            aria-label={strings.a11y.mainNav}
             className="hidden items-center gap-6 nav:flex"
           >
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.key}
-                href={`/${locale}/${item.href}/`}
+                href={`/${item.href}/`}
                 className="text-body text-ink-900 transition-colors hover:text-accent"
               >
-                #{dict.nav[item.key]}
+                #{strings.nav[item.key]}
               </Link>
             ))}
           </nav>
@@ -60,19 +52,11 @@ export function SiteHeader({
 
         <div className="flex items-center gap-4">
           <Link
-            href={`/${locale}/about/`}
+            href="/about/"
             className="hidden text-body text-ink-900 transition-colors hover:text-accent nav:block"
           >
-            {dict.nav.about}
+            {strings.nav.about}
           </Link>
-
-          <div className="hidden nav:block">
-            <LanguageSwitcher
-              current={locale}
-              label={dict.a11y.languages}
-              variant="button"
-            />
-          </div>
 
           <a
             href={TELEGRAM_URL}
@@ -81,12 +65,12 @@ export function SiteHeader({
             className="hidden items-center gap-2 bg-accent px-6 py-3 text-body text-white transition-opacity hover:opacity-90 nav:flex"
           >
             <TelegramIcon />
-            {dict.nav.telegram}
+            {strings.nav.telegram}
           </a>
 
           <Link
-            href={`/${locale}/search/`}
-            aria-label={dict.nav.search}
+            href="/search/"
+            aria-label={strings.nav.search}
             className="hidden h-12 w-12 items-center justify-center bg-hairline transition-colors hover:bg-cat-education nav:flex"
           >
             <SearchIcon />
@@ -98,17 +82,15 @@ export function SiteHeader({
               back onto the gutter - do not repeat it here, or the row ends up
               8px wider than the viewport and the whole page scrolls sideways. */}
           <div className="flex items-center gap-1 nav:hidden">
-            <LanguageSwitcher current={locale} label={dict.a11y.languages} />
-
             <Link
-              href={`/${locale}/search/`}
-              aria-label={dict.nav.search}
+              href="/search/"
+              aria-label={strings.nav.search}
               className="flex h-11 w-11 items-center justify-center text-ink-900"
             >
               <SearchIcon />
             </Link>
 
-            <BurgerMenu locale={locale} dict={dict} />
+            <BurgerMenu />
           </div>
         </div>
         </div>

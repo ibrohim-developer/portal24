@@ -1,6 +1,6 @@
 import type { FeedLayout } from "@/components/ui/feed-block";
 import type { CategorySlug } from "./news/types";
-import type { Dictionary } from "@/i18n/get-dictionary";
+import type { strings } from "./strings";
 
 /**
  * Navigation order is taken from the Figma header, left to right.
@@ -9,7 +9,7 @@ import type { Dictionary } from "@/i18n/get-dictionary";
  * own path and is excluded from CategorySlug.
  */
 export type NavItem = {
-  key: keyof Dictionary["nav"];
+  key: keyof (typeof strings)["nav"];
   href: string;
   category: CategorySlug | null;
 };

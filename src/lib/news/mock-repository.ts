@@ -1,4 +1,3 @@
-import type { Locale } from "@/i18n/config";
 import type { NewsRepository } from "./repository";
 import type {
   Article,
@@ -16,17 +15,29 @@ import type {
  *
  * Copy is lifted verbatim from the Figma so the layout is exercised with real
  * headline lengths - invented placeholder text hides wrapping bugs that only
- * show up with genuine Russian headlines.
+ * show up with genuine headlines.
+ *
+ * That copy is Russian, because the Figma is: these are stand-in stories, not
+ * editorial content, and only the category names below are the site's own
+ * Uzbek. Real Uzbek headlines arrive with the API, not by translating fixtures.
  *
  * Only this file is thrown away when the API lands.
  */
 
-const CATEGORY_NAMES: Record<CategorySlug, Record<Locale, string>> = {
-  sport: { ru: "Спорт", uz: "Sport", en: "Sport" },
-  education: { ru: "Образование", uz: "Ta'lim", en: "Education" },
-  finance: { ru: "Финансы", uz: "Moliya", en: "Finance" },
-  eco: { ru: "Экология", uz: "Ekologiya", en: "Ecology" },
-  tech: { ru: "Технологии", uz: "Texnologiya", en: "Technology" },
+/*
+ * Display names for the five categories.
+ *
+ * Spelled exactly as `strings.nav` spells them - a card's "#Taʼlim" and the
+ * heading above it come from different modules and must not disagree. When the
+ * admin API lands it supplies these and this table goes with the rest of the
+ * file.
+ */
+const CATEGORY_NAMES: Record<CategorySlug, string> = {
+  sport: "Sport",
+  education: "Taʼlim",
+  finance: "Moliya",
+  eco: "Ekologiya",
+  tech: "Texnologiyalar",
 };
 
 /** Fixed so static builds are byte-for-byte reproducible. */
@@ -100,8 +111,7 @@ const SEEDS: Seed[] = [
  *
  * Slugs are written out rather than derived from the index, so the URLs the
  * AuthorBlock links to survive someone reordering this list. Copy is Russian
- * throughout, as everywhere else in these fixtures - only category names are
- * localised, because only they come from a real translated source.
+ * throughout, as everywhere else in these fixtures - see the note at the top.
  */
 const AUTHORS: Array<{
   slug: string;
@@ -163,7 +173,7 @@ function authorIndexFor(index: number, category: CategorySlug): number {
 }
 
 /** The shape both the AuthorBlock and the author page consume. */
-function buildAuthorProfile(index: number, locale: Locale): AuthorProfile {
+function buildAuthorProfile(index: number): AuthorProfile {
   const author = AUTHORS[index];
 
   return {
@@ -181,7 +191,7 @@ function buildAuthorProfile(index: number, locale: Locale): AuthorProfile {
     },
     categories: author.categories.map((slug) => ({
       slug,
-      name: CATEGORY_NAMES[slug][locale],
+      name: CATEGORY_NAMES[slug],
     })),
   };
 }
@@ -206,12 +216,12 @@ function transliterate(title: string, id: number): string {
   return `${slug}-${id}`;
 }
 
-function buildArticles(locale: Locale): Article[] {
+function buildArticles(): Article[] {
   return SEEDS.map(([slug, title], i) => ({
     id: String(i + 1),
     slug: transliterate(title, i + 1),
     title,
-    category: { slug, name: CATEGORY_NAMES[slug][locale] },
+    category: { slug, name: CATEGORY_NAMES[slug] },
     coverImage: {
       url: "/img/placeholder.svg",
       alt: title,
@@ -350,18 +360,18 @@ function buildHighlights(): Highlight[] {
 }
 
 export const mockNewsRepository: NewsRepository = {
-  async getTopStories(locale, limit) {
-    return buildArticles(locale).slice(0, limit);
+  async getTopStories(limit) {
+    return buildArticles().slice(0, limit);
   },
 
-  async getPopular(locale, limit) {
+  async getPopular(limit) {
     // Deliberately a different slice than getTopStories so the two blocks do
     // not render identical cards while we are still on fixtures.
-    return buildArticles(locale).slice(4, 4 + limit);
+    return buildArticles().slice(4, 4 + limit);
   },
 
-  async getByCategory(locale, category, limit) {
-    return buildArticles(locale)
+  async getByCategory(category, limit) {
+    return buildArticles()
       .filter((a) => a.category.slug === category)
       .slice(0, limit);
   },
@@ -370,30 +380,27 @@ export const mockNewsRepository: NewsRepository = {
     return buildStats()[0] ?? null;
   },
 
-  async getRecentStats(_locale, limit) {
+  async getRecentStats(limit) {
     return buildStats().slice(1, 1 + limit);
   },
 
-  async getHighlights(_locale, limit) {
+  async getHighlights(limit) {
     return buildHighlights().slice(0, limit);
   },
 
-  async getSearchIndex(locale) {
-    return buildArticles(locale);
+  async getSearchIndex() {
+    return buildArticles();
   },
 
-  async getArticle(locale, slug) {
-    const article = buildArticles(locale).find((a) => a.slug === slug);
+  async getArticle(slug) {
+    const article = buildArticles().find((a) => a.slug === slug);
     if (!article) return null;
 
     const index = Number(article.id) - 1;
 
     return {
       ...article,
-      author: buildAuthorProfile(
-        authorIndexFor(index, article.category.slug),
-        locale,
-      ),
+      author: buildAuthorProfile(authorIndexFor(index, article.category.slug)),
       coverCaption: "Новый самолет сборной Узбекистана.",
       coverCredit: "Фото: Portal24",
       // Offset from publication rather than from "now": under static export a
@@ -405,36 +412,36 @@ export const mockNewsRepository: NewsRepository = {
     } satisfies ArticleDetail;
   },
 
-  async getSlugs(locale) {
-    return buildArticles(locale).map((a) => a.slug);
+  async getSlugs() {
+    return buildArticles().map((a) => a.slug);
   },
 
-  async getRelated(locale, slug, limit) {
-    return buildArticles(locale)
+  async getRelated(slug, limit) {
+    return buildArticles()
       .filter((a) => a.slug !== slug)
       .slice(0, limit);
   },
 
-  async getAuthor(locale, slug) {
+  async getAuthor(slug) {
     const index = AUTHORS.findIndex((a) => a.slug === slug);
-    return index === -1 ? null : buildAuthorProfile(index, locale);
+    return index === -1 ? null : buildAuthorProfile(index);
   },
 
   async getAuthorSlugs() {
     return AUTHORS.map((a) => a.slug);
   },
 
-  async getPopularByAuthor(locale, slug, limit) {
+  async getPopularByAuthor(slug, limit) {
     // No popularity signal in the fixtures, so this takes a slice from the
     // middle of the author's run - the same trick getPopular uses, so the
     // block does not simply repeat the top of "Все статьи" below it.
-    const own = buildArticles(locale).filter((a) => a.author?.slug === slug);
+    const own = buildArticles().filter((a) => a.author?.slug === slug);
     return own.slice(2, 2 + limit).concat(own.slice(0, 2)).slice(0, limit);
   },
 
-  async getByAuthor(locale, slug, limit) {
+  async getByAuthor(slug, limit) {
     // Already newest-first: buildArticles staggers publishedAt downwards.
-    return buildArticles(locale)
+    return buildArticles()
       .filter((a) => a.author?.slug === slug)
       .slice(0, limit);
   },

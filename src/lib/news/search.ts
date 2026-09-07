@@ -49,9 +49,9 @@ export function matchArticles(articles: Article[], query: string): Article[] {
  * category links: the design labels them with phrases ("Воздух в Ташкенте"),
  * and each carries a category only so it can borrow that category's tint.
  *
- * The label itself is the query, so it lives in the dictionary; this keeps the
- * order and the tint, which are the same in every language. When the CMS can
- * hold editorial picks, this is what it replaces.
+ * The label itself is the query, so it lives in `strings`; this keeps the order
+ * and the tint. When the CMS can hold editorial picks, this is what it
+ * replaces.
  */
 export const SEARCH_SUGGESTIONS = [
   { key: "worldCup", category: "sport" },
