@@ -54,7 +54,11 @@
   --container-main: 960px;
   --container-side: 300px;
 
-  --font-sans: var(--font-portal), ui-sans-serif, system-ui, sans-serif;
+  /* Neue Haas first, Inter behind it for the glyphs it lacks - Cyrillic, the
+     Uzbek turned commas in oʻ/gʻ, №. See src/lib/fonts.ts. */
+  --font-sans:
+    var(--font-portal), var(--font-portal-fallback), ui-sans-serif, system-ui,
+    sans-serif;
 
   /*
    * The header's desktop row - six category links, "Biz haqimizda", the
@@ -102,6 +106,20 @@
  */
 @utility w-column {
   width: calc((100% - var(--spacing-gutter)) * 960 / 1260);
+}
+
+/*
+ * Neue Haas's Bold cut, for the error screen - the one place the site sets
+ * anything at 700.
+ *
+ * It has to be asked for by name: the cut is a family of its own so that it
+ * stays out of every page's preload (see src/lib/fonts.ts), and a plain
+ * `font-bold` would match 700 against --font-sans's 500 and synthesise the
+ * weight rather than fall through to it.
+ */
+@utility font-display-bold {
+  font-family: var(--font-portal-bold), var(--font-sans);
+  font-weight: 700;
 }
 
 /*

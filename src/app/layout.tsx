@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { portalFont } from "@/lib/fonts";
+import { RouteProgress } from "@/components/layout/route-progress";
+import { fallbackFont, portalBoldFont, portalFont } from "@/lib/fonts";
 import { strings } from "@/lib/strings";
 import "./globals.css";
 
@@ -27,8 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uz" className={`${portalFont.variable} h-full`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+    <html
+      lang="uz"
+      className={`${portalFont.variable} ${portalBoldFont.variable} ${fallbackFont.variable} h-full`}
+    >
+      <body className="flex min-h-full flex-col">
+        <RouteProgress />
+        {children}
+      </body>
     </html>
   );
 }

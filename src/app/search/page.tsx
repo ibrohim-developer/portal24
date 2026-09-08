@@ -41,7 +41,7 @@ export const metadata: Metadata = {
  * "Поиск" heading above it, so the h1 here is for the document outline only.
  */
 export default async function SearchPage() {
-  const repo = getNewsRepository();
+  const repo = getNewsRepository("api");
 
   const [index, popular] = await Promise.all([
     repo.getSearchIndex(),

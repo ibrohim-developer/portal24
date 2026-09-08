@@ -1,41 +1,55 @@
-import type { CategorySlug } from "./news/types";
-import type { strings } from "./strings";
+import type { Category, CategorySlug } from "./news/types";
+import { strings } from "./strings";
 
 /**
- * Navigation order is taken from the Figma header, left to right.
+ * One link in the header, burger panel or footer.
  *
- * "popular" is not a category - it is a cross-cutting feed - so it carries its
- * own path and is excluded from CategorySlug.
+ * Carries its own label rather than a key into `strings.nav`, because the
+ * categories come from the CMS now and their names come with them - only
+ * "Ommabop" is the site's own word.
  */
 export type NavItem = {
-  key: keyof (typeof strings)["nav"];
+  key: string;
   href: string;
-  category: CategorySlug | null;
+  label: string;
 };
 
-export const NAV_ITEMS: NavItem[] = [
-  { key: "popular", href: "popular", category: null },
-  { key: "sport", href: "sport", category: "sport" },
-  { key: "eco", href: "eco", category: "eco" },
-  { key: "education", href: "education", category: "education" },
-  { key: "finance", href: "finance", category: "finance" },
-  { key: "tech", href: "tech", category: "tech" },
-];
+/**
+ * The nav row: the cross-cutting "Ommabop" feed, then one link per category
+ * the CMS publishes, in the CMS's order.
+ *
+ * Built from the fetched list rather than from a constant, so a category added
+ * in the admin panel appears in the nav the same way it appears on the main
+ * page. The Figma's order (sport, eco, taʼlim, moliya, texnologiyalar) cannot
+ * be honoured: none of those five except Sport exists in the CMS.
+ *
+ * Note the row was designed for six items and the CMS currently yields seven,
+ * with longer Cyrillic names - see the width note on `SiteHeader`.
+ */
+export function navItems(categories: Category[]): NavItem[] {
+  return [
+    { key: "popular", href: "popular", label: strings.nav.popular },
+    ...categories.map((category) => ({
+      key: category.slug,
+      href: category.slug,
+      label: category.name,
+    })),
+  ];
+}
 
 /**
- * The footer lists the same links as the header but in its own order
- * (Figma 111:247, desktop frame): popular, sport, education, finance, eco,
- * tech. Reusing NAV_ITEMS here would silently reorder the footer whenever the
- * header changes, so the two orders are kept apart.
+ * The footer's own list.
+ *
+ * The Figma gives the footer a different order from the header (111:247:
+ * popular, sport, education, finance, eco, tech), and the two were kept apart
+ * so neither could silently reorder the other. That distinction cannot
+ * survive the CMS taxonomy - the categories it orders no longer exist - so
+ * both rows now read the same list. The function is kept separate anyway, as
+ * the place to put the footer's order back if the designer wants one.
  */
-export const FOOTER_NAV_ITEMS: NavItem[] = [
-  { key: "popular", href: "popular", category: null },
-  { key: "sport", href: "sport", category: "sport" },
-  { key: "education", href: "education", category: "education" },
-  { key: "finance", href: "finance", category: "finance" },
-  { key: "eco", href: "eco", category: "eco" },
-  { key: "tech", href: "tech", category: "tech" },
-];
+export function footerNavItems(categories: Category[]): NavItem[] {
+  return navItems(categories);
+}
 
 /**
  * Category -> background tint, from the Figma TextBlock component set (variant

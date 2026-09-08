@@ -5,7 +5,8 @@ import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { SearchIcon } from "@/components/ui/icons";
 import { TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
-import { NAV_ITEMS } from "@/lib/categories";
+import { navItems } from "@/lib/categories";
+import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 
 /**
@@ -26,7 +27,16 @@ import { strings } from "@/lib/strings";
  * They switch at `nav` (1320) rather than at `lg`, because the desktop row is
  * a fixed amount of text that does not fit a 1024 viewport - see the token.
  */
-export function SiteHeader() {
+export async function SiteHeader() {
+  // Fetched here rather than threaded down from each page: the header is on
+  // every route, and fetch memoisation collapses this into the category lookup
+  // the page itself already makes.
+  //
+  // The row was drawn for six links and the CMS yields seven, in longer
+  // Cyrillic names - so it is closer to overflowing its 1320 breakpoint than
+  // the design intended. Worth measuring against the real category list.
+  const items = navItems(await getNewsRepository("api").getCategories());
+
   return (
     <header className="border-b border-hairline">
       <Container>
@@ -38,13 +48,13 @@ export function SiteHeader() {
             aria-label={strings.a11y.mainNav}
             className="hidden items-center gap-6 nav:flex"
           >
-            {NAV_ITEMS.map((item) => (
+            {items.map((item) => (
               <Link
                 key={item.key}
                 href={`/${item.href}/`}
                 className="text-body text-ink-900 transition-colors hover:text-accent"
               >
-                #{strings.nav[item.key]}
+                #{item.label}
               </Link>
             ))}
           </nav>
@@ -90,7 +100,7 @@ export function SiteHeader() {
               <SearchIcon />
             </Link>
 
-            <BurgerMenu />
+            <BurgerMenu items={items} />
           </div>
         </div>
         </div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/ui/logo";
 import { SearchIcon } from "@/components/ui/icons";
 import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
-import { NAV_ITEMS } from "@/lib/categories";
+import type { NavItem } from "@/lib/categories";
 import { strings } from "@/lib/strings";
 
 /**
@@ -23,7 +23,7 @@ import { strings } from "@/lib/strings";
  * server, so with JS disabled the page still reads fine - only this toggle is
  * inert, which is why the links it contains are duplicated in the footer.
  */
-export function BurgerMenu() {
+export function BurgerMenu({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false);
 
   // A drawer that stays open while the page scrolls underneath reads as a bug.
@@ -101,14 +101,14 @@ export function BurgerMenu() {
               aria-label={strings.a11y.mainNav}
               className="flex flex-col items-center gap-9 py-8 text-center"
             >
-              {NAV_ITEMS.map((item) => (
+              {items.map((item) => (
                 <Link
                   key={item.key}
                   href={`/${item.href}/`}
                   onClick={() => setOpen(false)}
                   className="text-body text-ink-900"
                 >
-                  #{strings.nav[item.key]}
+                  #{item.label}
                 </Link>
               ))}
 

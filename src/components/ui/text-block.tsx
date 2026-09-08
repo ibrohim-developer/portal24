@@ -21,6 +21,7 @@ export function TextBlock({
   tinted = false,
   inset = false,
   showCategory = true,
+  stretch = false,
   highlight,
 }: {
   article: Article;
@@ -44,6 +45,13 @@ export function TextBlock({
    * is the first line of the block.
    */
   showCategory?: boolean;
+  /**
+   * Blows the headline's hit area up to fill the nearest positioned ancestor,
+   * so a whole card is clickable rather than just its cover and headline. Set
+   * by NewsCard and NewsRow, which mark themselves `relative` for it; leave it
+   * off wherever the block is not the only link in its box.
+   */
+  stretch?: boolean;
   /**
    * A search query whose words are painted with the highlight yellow inside
    * the headline. Set by the search results grid; unset everywhere else.
@@ -77,10 +85,20 @@ export function TextBlock({
       >
         {/* `group-hover/card` so the headline reacts to the cover image being
             hovered too - see NewsCard. It is inert wherever this block is not
-            inside one, which is every caller that passes `inset` or `tinted`. */}
+            inside one, which is every caller that passes `inset` or `tinted`.
+
+            The `after` overlay is the whole-card hit area: an empty pseudo-
+            element stretched over the card, which carries the link's own
+            pointer cursor and click target to every pixel of it - the gaps and
+            the date line included. It paints last within the card, so it stays
+            above the cover even while the cover is mid-`scale` (a transform
+            makes its own stacking context). */}
         <Link
           href={`/news/${article.slug}/`}
-          className="transition-colors group-hover/card:text-accent hover:text-accent"
+          className={cn(
+            "transition-colors group-hover/card:text-accent hover:text-accent",
+            stretch && "after:absolute after:inset-0 after:content-['']",
+          )}
         >
           {highlight
             ? highlightParts(article.title, highlight).map((part, i) =>

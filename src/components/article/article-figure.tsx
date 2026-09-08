@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { cn } from "@/lib/cn";
+import { canOptimizeImage } from "@/lib/images";
 import type { ArticleImage } from "@/lib/news/types";
 
 /**
@@ -39,6 +40,12 @@ export function ArticleFigure({
         height={image.height}
         priority={priority}
         sizes={sizes}
+        // Body images are frequently hot-linked from other publications, and
+        // `next/image` throws on a host the config does not list rather than
+        // degrading - one pasted image took the whole article page down.
+        // Unoptimized skips the loader, and with it that check. See
+        // `canOptimizeImage` for why the answer is not a longer allowlist.
+        unoptimized={!canOptimizeImage(image.url)}
         className={cn("w-full object-cover", aspect)}
       />
 

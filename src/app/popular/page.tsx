@@ -47,7 +47,7 @@ export const metadata: Metadata = {
  * the main and author pages rather than taken from 1981:16650.
  */
 export default async function PopularPage() {
-  const repo = getNewsRepository();
+  const repo = getNewsRepository("api");
 
   const popular = await repo.getPopular(FEED_LIMIT);
 

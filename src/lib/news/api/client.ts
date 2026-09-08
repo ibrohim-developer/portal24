@@ -19,6 +19,15 @@ const API_BASE = process.env.PORTAL24_API_URL ?? "https://api.portal24.uz";
 /** The site publishes in Uzbek only - see `lib/strings`. */
 const LANG = "uz";
 
+/** How many times a throttled request waits and tries again before giving up. */
+const RATE_LIMIT_RETRIES = 3;
+
+/** Growing pause between those attempts, when the API sends no `Retry-After`. */
+const RETRY_BACKOFF_MS = 1500;
+
+/** Ceiling on a `Retry-After` we will actually sit through. */
+const MAX_RETRY_WAIT_SECONDS = 10;
+
 /** The envelope every list endpoint answers with. */
 export interface ApiPage<T> {
   data: T[];
@@ -97,9 +106,26 @@ async function apiGet<T>(
   // same stale stories - the page would tick over without the news changing.
   // Identical requests are still memoised within one render pass, so the six
   // category feeds share the one category lookup between them.
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     headers: { lang: LANG, accept: "application/json" },
   });
+
+  // The API throttles at 120 requests a minute and answers 429 past that,
+  // which a build renders straight into a failure and an on-demand page
+  // renders into a 500 for whoever asked for it. Both are worth one wait:
+  // the limit is per-minute, so the window is always seconds away from
+  // reopening. `Retry-After` is honoured when sent.
+  for (let attempt = 0; attempt < RATE_LIMIT_RETRIES && response.status === 429; attempt++) {
+    const retryAfter = Number(response.headers.get("retry-after"));
+    const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? Math.min(retryAfter, MAX_RETRY_WAIT_SECONDS) * 1000
+      : RETRY_BACKOFF_MS * (attempt + 1);
+
+    await new Promise((resolve) => setTimeout(resolve, waitMs));
+    response = await fetch(url, {
+      headers: { lang: LANG, accept: "application/json" },
+    });
+  }
 
   if (!response.ok) {
     throw new ApiError(response.status, url.pathname, await response.text());

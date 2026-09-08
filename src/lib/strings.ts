@@ -146,6 +146,28 @@ export const strings = {
     founder: "Учредитель: «AXBOROT MEDIA» MCHJ",
     editor: "Главный редактор: Кадамов Жавохир Азизбекович"
   },
+  /*
+   * The error boundaries - app/error.tsx and app/global-error.tsx.
+   *
+   * Written for the reader rather than the operator. The failure this stands
+   * in for is almost always the CMS being unreachable, which nobody visiting
+   * the site can act on beyond waiting, so the copy says "try again" and not
+   * what broke. The digest is the one operator-facing thing on the page: it
+   * matches the entry the server logged, so a reader who quotes it gives
+   * support something to search for.
+   *
+   * Not read by the editorial office yet, like the rest of the Uzbek here.
+   */
+  error: {
+    title: "Kechirasiz, nimadir notoʻgʻri ketdi",
+    text:
+      "Sahifani yuklab boʻlmadi. Bir necha soniyadan soʻng qayta urinib koʻring. Muammo bartaraf etilmasa, biz bilan bogʻlaning.",
+    retry: "Qayta urinish",
+    home: "Bosh sahifaga",
+    /** Introduces the Telegram link under the rule. */
+    contactLead: "Muammo davom etsa:",
+    contactTelegram: "Telegram kanalimiz"
+  },
   a11y: {
     home: "Portal24 — bosh sahifaga",
     mainNav: "Asosiy navigatsiya",

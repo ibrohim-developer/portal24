@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
-import { FOOTER_NAV_ITEMS } from "@/lib/categories";
+import { footerNavItems } from "@/lib/categories";
+import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 
 /**
@@ -27,7 +28,9 @@ import { strings } from "@/lib/strings";
  * of it - call-out box, social chips, the divider - is plain white at low
  * opacity, which is how the design builds them.
  */
-export function SiteFooter() {
+export async function SiteFooter() {
+  const items = footerNavItems(await getNewsRepository("api").getCategories());
+
   return (
     <footer className="mt-section bg-ink-700 text-white">
       <Container className="py-5 lg:py-10">
@@ -44,13 +47,13 @@ export function SiteFooter() {
 
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-4 lg:gap-8">
           <FooterColumn title={strings.footer.sectionsTitle}>
-            {FOOTER_NAV_ITEMS.map((item) => (
+            {items.map((item) => (
               <Link
                 key={item.key}
                 href={`/${item.href}/`}
                 className="text-body text-white transition-opacity hover:opacity-70"
               >
-                #{strings.nav[item.key]}
+                #{item.label}
               </Link>
             ))}
           </FooterColumn>

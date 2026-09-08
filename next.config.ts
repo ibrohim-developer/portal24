@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { IMAGE_REMOTE_PATTERNS } from "./src/lib/images";
+
 const nextConfig: NextConfig = {
   // No `output` line: the site is served by a Node process under pm2, behind
   // the nginx proxy in deploy/nginx.conf. It used to be `output: "export"`,
@@ -12,16 +14,15 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
 
   images: {
-    // next/image answers 400 for any remote host not listed here, so this is
-    // what lets a CMS cover render at all. Narrowed to the uploads path
-    // rather than the whole host: nothing else on the API serves images.
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "api.portal24.uz",
-        pathname: "/uploads/**",
-      },
-    ],
+    // next/image throws for any remote host not listed here, so this is what
+    // lets a CMS cover render at all. Narrowed to the uploads path rather than
+    // the whole host: nothing else on the API serves images.
+    //
+    // Shared with `canOptimizeImage`, which the components use to decide
+    // whether an image may go through the optimizer at all. Kept in one place
+    // because a host in the config but not the guard - or the reverse - is a
+    // crashed page.
+    remotePatterns: IMAGE_REMOTE_PATTERNS,
 
     // How long an optimized variant lives before the optimizer re-fetches it.
     //

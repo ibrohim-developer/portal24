@@ -44,6 +44,9 @@ const POPULARITY_POOL = 100;
 /** How many of the newest stories get their page built ahead of a request. */
 const PREBUILT_ARTICLES = 100;
 
+/** How much of the archive the search page carries - see `getSearchIndex`. */
+const SEARCH_INDEX_SIZE = 300;
+
 export const apiNewsRepository: NewsRepository = {
   async getCategories() {
     return (await loadCategories()).map(mapCategory);
@@ -96,6 +99,19 @@ export const apiNewsRepository: NewsRepository = {
     return recent.map((article) => article.slug);
   },
 
+  async getSearchIndex() {
+    // The whole index ships to the browser and `matchArticles` filters it
+    // there, so this is a window on the archive rather than all of it: 300
+    // cards is three requests and roughly 90KB of JSON, where all 1,373 would
+    // be fourteen requests and a payload no reader would forgive.
+    //
+    // The API does have a real `?search=`, which is the better answer - but
+    // querying it means the search page stops being prerendered, which is a
+    // change to that page rather than to this call.
+    const recent = await fetchNewsUpTo(SEARCH_INDEX_SIZE);
+    return recent.map(mapArticle);
+  },
+
   async getRelated(slug, limit) {
     // The API has no "related" endpoint and no tag query, so this is the rest
     // of the story's own category. Costs a second request because the list
@@ -126,14 +142,10 @@ export const apiNewsRepository: NewsRepository = {
    *   `author: null`, the article page draws without its byline card, and
    *   there is nothing for an author page to render. The author pages below
    *   therefore still serve the three fixture writers.
-   * - The search index: the API has a real `?search=` now, so the right move
-   *   is for the search page to query it rather than for this to ship 1,373
-   *   cards to the browser. That is a change to the page, not to this call.
    */
   getStatOfTheDay: mockNewsRepository.getStatOfTheDay,
   getRecentStats: mockNewsRepository.getRecentStats,
   getHighlights: mockNewsRepository.getHighlights,
-  getSearchIndex: mockNewsRepository.getSearchIndex,
   getAuthor: mockNewsRepository.getAuthor,
   getAuthorSlugs: mockNewsRepository.getAuthorSlugs,
   getPopularByAuthor: mockNewsRepository.getPopularByAuthor,

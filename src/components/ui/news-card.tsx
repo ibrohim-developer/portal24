@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { TextBlock, type TextBlockSize } from "./text-block";
 import { cn } from "@/lib/cn";
+import { canOptimizeImage } from "@/lib/images";
 import type { Article } from "@/lib/news/types";
 
 /**
@@ -18,6 +18,12 @@ import type { Article } from "@/lib/news/types";
  * and the headline turns accent from either one. Named because a plain `group`
  * would also match the ArticleFeed <details> that wraps a whole grid of these,
  * where hovering the "показать ещё" button would light up every card in it.
+ *
+ * The whole card is one hit area: `relative` here is what the headline link's
+ * stretched overlay covers (see TextBlock's `stretch`), so every pixel of the
+ * card - cover, gaps, date line - shows the pointer and opens the story. That
+ * leaves a single link in the a11y tree per card, which is why the cover is a
+ * plain <div> rather than the duplicate aria-hidden link it used to be.
  */
 const IMAGE_ASPECT: Record<TextBlockSize, string> = {
   lg: "aspect-[633/465]",
@@ -40,17 +46,10 @@ export function NewsCard({
   /** Passed through to the TextBlock; set by the search results grid. */
   highlight?: string;
 }) {
-  const href = `/news/${article.slug}/`;
-
   return (
-    <article className="group/card flex flex-col gap-gutter">
+    <article className="group/card relative flex flex-col gap-gutter">
       {article.coverImage ? (
-        <Link
-          href={href}
-          tabIndex={-1}
-          aria-hidden="true"
-          className={cn("block w-full overflow-hidden", IMAGE_ASPECT[size])}
-        >
+        <div className={cn("w-full overflow-hidden", IMAGE_ASPECT[size])}>
           <Image
             src={article.coverImage.url}
             alt=""
@@ -58,9 +57,13 @@ export function NewsCard({
             height={article.coverImage.height}
             priority={priority}
             sizes={size === "lg" ? "(max-width: 1023px) 100vw, 633px" : "(max-width: 1023px) 100vw, 307px"}
+            // Covers are all on the CMS host today, but one pasted from
+            // elsewhere would throw rather than degrade - and on a feed that
+            // takes the whole page with it. See `canOptimizeImage`.
+            unoptimized={!canOptimizeImage(article.coverImage.url)}
             className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
           />
-        </Link>
+        </div>
       ) : null}
 
       <TextBlock
@@ -68,6 +71,7 @@ export function NewsCard({
         size={size}
         showCategory={showCategory}
         highlight={highlight}
+        stretch
       />
     </article>
   );

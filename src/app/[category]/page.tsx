@@ -10,7 +10,6 @@ import { Container } from "@/components/ui/container";
 import { LeadBlock } from "@/components/ui/lead-block";
 import { getNewsRepository, type ContentSource } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
-import { categorySlugs, isCategorySlug } from "@/lib/news/types";
 
 /**
  * How many stories the feed holds, and how many of them are in the grid
@@ -41,30 +40,23 @@ export const revalidate = 300;
 export const dynamicParams = true;
 
 /**
- * A category can come from either taxonomy, so the page has to know which.
+ * The CMS's categories are the only ones the site publishes.
  *
- * The design's five are fixtures and are named by `strings.nav`; the CMS's own
- * six come from the API and are named by the API. Both are built: the main
- * page links to the CMS ones, while article and author pages - still on
- * fixtures - link to the design ones, and neither set may 404.
+ * The design's five (sport, eco, taʼlim, moliya, texnologiyalar) were built
+ * alongside them for a while, so that fixture-backed pages linking to them
+ * would not 404. That turned out to be the wrong trade: those pages served
+ * fixture stories whose own article pages no longer existed, so every card on
+ * them was a dead link. Sport survives on its own merit - Спорт transliterates
+ * onto the same segment - and the other four are gone with the fixtures.
  */
 async function resolveCategory(
   slug: string,
 ): Promise<{ source: ContentSource; name: string } | null> {
-  // The CMS is asked first, because the two taxonomies overlap on `sport`:
-  // Спорт transliterates to the same segment the design already used. Real
-  // stories win that collision - the main page's #Спорт block links here, and
-  // it would be odd for it to open a page of fixtures.
   const match = (await getNewsRepository("api").getCategories()).find(
     (candidate) => candidate.slug === slug,
   );
-  if (match) return { source: "api", name: match.name };
 
-  if (isCategorySlug(slug)) {
-    return { source: "fixtures", name: strings.nav[slug] };
-  }
-
-  return null;
+  return match ? { source: "api", name: match.name } : null;
 }
 
 /**
@@ -73,11 +65,8 @@ async function resolveCategory(
  * so none of them can be shadowed from here.
  */
 export async function generateStaticParams() {
-  const cmsCategories = await getNewsRepository("api").getCategories();
-
-  return [...categorySlugs, ...cmsCategories.map((c) => c.slug)]
-    .filter((category, index, all) => all.indexOf(category) === index)
-    .map((category) => ({ category }));
+  const categories = await getNewsRepository("api").getCategories();
+  return categories.map(({ slug }) => ({ category: slug }));
 }
 
 type CategoryParams = { params: Promise<{ category: string }> };
