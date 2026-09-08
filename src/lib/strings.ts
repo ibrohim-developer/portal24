@@ -134,17 +134,16 @@ export const strings = {
     mediaKit: "Mediakitni yuklab olish",
     socialTitle: "Ijtimoiy tarmoqlarda",
     /*
-     * The three lines below are still Russian, deliberately.
-     *
-     * They quote a media-registration certificate and name the editor-in-chief,
-     * and a machine translation of a legal notice is worse than no translation.
-     * The About page carries an Uzbek rendering of the same certificate in
-     * `about.legalText`; replace these only with wording the editorial office
-     * signs off on, not with a copy of that.
+     * The three lines below quote a media-registration certificate and name the
+     * editor-in-chief, so they carry the wording the editorial office supplied
+     * rather than a translation of it. The About page states the same
+     * certificate in its own words in `about.legalText`; keep the two in step
+     * only through copy the office signs off on.
      */
-    legal: "PORTAL24 — зарегистрировано в Агентстве информации и массовых коммуникаций при Администрации Президента Республики Узбекистан. Свидетельство о регистрации интернет-СМИ №2588770 от 02.10.2024",
-    founder: "Учредитель: «AXBOROT MEDIA» MCHJ",
-    editor: "Главный редактор: Кадамов Жавохир Азизбекович"
+    legal:
+      "PORTAL24 — Oʻzbekiston Respublikasi Prezidenti Administratsiyasi huzuridagi Axborot va ommaviy kommunikatsiyalar agentligida roʻyxatdan oʻtgan. Internet OAV sifatida roʻyxatdan oʻtganlik toʻgʻrisidagi guvohnoma №2588770, 02.10.2024-yil.",
+    founder: "Muassis: «AXBOROT MEDIA» MCHJ",
+    editor: "Bosh muharrir: Qadamov Javohir Azizbek oʻgʻli"
   },
   /*
    * The error boundaries - app/error.tsx and app/global-error.tsx.

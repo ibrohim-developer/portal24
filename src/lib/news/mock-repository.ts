@@ -129,8 +129,8 @@ const AUTHORS: Array<{
     bio: "Пишет о национальных сборных, школьном спорте и спортивной инфраструктуре — от бюджетов региональных федераций до того, как школьные секции переживают ремонт стадионов.\n\nДо прихода в редакцию восемь лет работал комментатором на региональном телевидении и вёл репортажи с юношеских первенств.",
     categories: ["sport", "education"],
     contacts: [
-      { network: "instagram", href: "https://instagram.com/portal24uz" },
-      { network: "telegram", href: "https://t.me/portal24uz" },
+      { network: "instagram", href: "https://www.instagram.com/portal24.uz/" },
+      { network: "telegram", href: "https://t.me/portal24_official" },
     ],
   },
   {
@@ -139,7 +139,7 @@ const AUTHORS: Array<{
     role: "Корреспондент отдела экономики",
     bio: "Разбирает банковский сектор и экологическую повестку — от качества воздуха в Ташкенте до того, как обе темы сходятся в счетах за электроэнергию.\n\nСобирает мнения отраслевых экспертов и переводит сложные финансовые решения на понятный язык фактов и цифр.",
     categories: ["eco", "finance"],
-    contacts: [{ network: "telegram", href: "https://t.me/portal24uz" }],
+    contacts: [{ network: "telegram", href: "https://t.me/portal24_official" }],
   },
   {
     slug: "timur-yusupov",
@@ -148,8 +148,8 @@ const AUTHORS: Array<{
     bio: "Следит за телекомом, искусственным интеллектом и цифровыми сервисами банков. Регулярно тестирует новые продукты и разбирает, что за громкими анонсами стоит на самом деле.\n\nВедёт еженедельную рассылку о технологиях в Центральной Азии.",
     categories: ["tech", "finance"],
     contacts: [
-      { network: "instagram", href: "https://instagram.com/portal24uz" },
-      { network: "telegram", href: "https://t.me/portal24uz" },
+      { network: "instagram", href: "https://www.instagram.com/portal24.uz/" },
+      { network: "telegram", href: "https://t.me/portal24_official" },
     ],
   },
 ];

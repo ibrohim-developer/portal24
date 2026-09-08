@@ -90,10 +90,16 @@ export type SocialLink = SocialMark & { href: string };
  * footer and on About Us. Telegram is deliberately absent; see below.
  */
 export const SOCIAL: SocialLink[] = [
-  { ...SOCIAL_MARKS.instagram, href: "https://instagram.com/portal24uz" },
-  { ...SOCIAL_MARKS.youtube, href: "https://youtube.com/@portal24uz" },
-  { ...SOCIAL_MARKS.facebook, href: "https://facebook.com/portal24uz" },
-  { ...SOCIAL_MARKS.linkedin, href: "https://linkedin.com/company/portal24uz" },
+  { ...SOCIAL_MARKS.instagram, href: "https://www.instagram.com/portal24.uz/" },
+  { ...SOCIAL_MARKS.youtube, href: "https://www.youtube.com/@PORTAL24LIVE" },
+  {
+    ...SOCIAL_MARKS.facebook,
+    href: "https://www.facebook.com/people/Portal24-Live/61590705485509/",
+  },
+  {
+    ...SOCIAL_MARKS.linkedin,
+    href: "https://www.linkedin.com/company/portal24-uz/",
+  },
 ];
 
 /**
@@ -102,7 +108,7 @@ export const SOCIAL: SocialLink[] = [
  * burger menu) paints it differently. Only the destination and the mark are
  * shared.
  */
-export const TELEGRAM_URL = "https://t.me/portal24uz";
+export const TELEGRAM_URL = "https://t.me/portal24_official";
 
 export function TelegramIcon({ size = 20 }: IconProps) {
   return (
