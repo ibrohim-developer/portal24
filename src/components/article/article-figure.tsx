@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Photo } from "@/components/ui/photo";
 import { cn } from "@/lib/cn";
 import { canOptimizeImage } from "@/lib/images";
 import type { ArticleImage } from "@/lib/news/types";
@@ -33,7 +32,7 @@ export function ArticleFigure({
 }) {
   return (
     <figure className="flex flex-col gap-4">
-      <Image
+      <Photo
         src={image.url}
         alt={image.alt}
         width={image.width}

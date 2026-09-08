@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Photo } from "@/components/ui/photo";
 import Link from "next/link";
 
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -33,7 +33,7 @@ export function AuthorBlock({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
         <div className="flex items-center gap-4">
           {author.avatar ? (
-            <Image
+            <Photo
               src={author.avatar.url}
               alt=""
               width={80}

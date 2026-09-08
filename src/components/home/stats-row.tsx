@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Photo } from "@/components/ui/photo";
 import { BleedCarousel } from "@/components/ui/bleed-carousel";
 import { formatStatDate } from "@/lib/format";
 import type { Stat } from "@/lib/news/types";
@@ -47,7 +46,7 @@ export function StatsRow({
           className="relative h-[500px] w-[306px] shrink-0 snap-start overflow-hidden bg-hairline"
         >
           {stat.coverImage ? (
-            <Image
+            <Photo
               src={stat.coverImage.url}
               alt=""
               width={stat.coverImage.width}

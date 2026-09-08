@@ -84,7 +84,6 @@ export default function AboutPage() {
                 title={about.mediaKit.title}
                 items={about.mediaKit.items}
                 downloadLabel={about.mediaKit.download}
-                href="/media-kit/"
               />
 
               {/* The only block that runs the full 960 of the content column. */}

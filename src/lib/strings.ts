@@ -173,6 +173,7 @@ export const strings = {
     mainNav: "Asosiy navigatsiya",
     advertising: "Reklama",
     prev: "Orqaga",
-    next: "Oldinga"
+    next: "Oldinga",
+    loading: "Maqola yuklanmoqda"
   }
 };

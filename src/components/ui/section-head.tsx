@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ChevronRightIcon } from "@/components/ui/icons";
-import { cn } from "@/lib/cn";
 
 /**
  * Section heading with an optional "see all" link, from the Figma SectionHead
@@ -17,28 +16,20 @@ export function SectionHead({
   href,
   linkLabel,
   actions,
-  titleWeight = "medium",
 }: {
   title: string;
   href?: string;
   linkLabel?: string;
   actions?: ReactNode;
-  /**
-   * The Figma's `Heading/L` token reads "weight 400", but that 400 is the
-   * Roman number inside the Medium cut of Neue Haas Grotesk ("Pro 6"), which
-   * is why every head here is `font-medium` against the Inter placeholder.
-   * "normal" is for heads the design genuinely sets lighter.
-   */
-  titleWeight?: "medium" | "normal";
 }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-      <h2
-        className={cn(
-          "min-w-0 text-title-sm text-ink-900 lg:text-title-lg",
-          titleWeight === "normal" ? "font-normal" : "font-medium",
-        )}
-      >
+      {/*
+        The Figma's `Heading/L` token reads "weight 400", but that 400 is
+        the Roman number inside the Medium cut of Neue Haas Grotesk ("Pro 6"),
+        which is why every head is `font-medium` against the Inter placeholder.
+      */}
+      <h2 className="min-w-0 text-title-sm font-medium text-ink-900 lg:text-title-lg">
         {title}
       </h2>
 

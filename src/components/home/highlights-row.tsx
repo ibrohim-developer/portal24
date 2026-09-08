@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Photo } from "@/components/ui/photo";
 import Link from "next/link";
 
 import { BleedCarousel } from "@/components/ui/bleed-carousel";
@@ -61,7 +61,7 @@ function HighlightMedia({ highlight }: { highlight: Highlight }) {
   if (!highlight.coverImage) return null;
 
   const image = (
-    <Image
+    <Photo
       src={highlight.coverImage.url}
       alt={highlight.href ? "" : highlight.title}
       width={highlight.coverImage.width}

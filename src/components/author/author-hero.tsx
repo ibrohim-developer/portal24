@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Photo } from "@/components/ui/photo";
 import Link from "next/link";
 
 import { SOCIAL_MARKS } from "@/components/ui/social";
@@ -37,7 +37,7 @@ export function AuthorHero({ author }: { author: AuthorProfile }) {
   return (
     <header className="flex flex-col gap-6 lg:flex-row lg:gap-6">
       {author.avatar ? (
-        <Image
+        <Photo
           src={author.avatar.url}
           alt=""
           width={author.avatar.width}

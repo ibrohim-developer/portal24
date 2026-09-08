@@ -40,13 +40,11 @@ type ArticleParams = { params: Promise<{ slug: string }> };
  * The 800 + 20 + 300 column pair, shared by the article and the feeds below it
  * so both stay on the same grid between 1024px and the 1120px cap.
  *
- * Ratios rather than a fixed rail, for the reason `grid-rail` gives about the
- * 960 + 20 + 300 the rest of the site is built on: neither column is at its
- * design width until the viewport reaches 1440, so the two have to give ground
- * together. This page is the narrower 1121 "Content" frame, hence its own pair.
+ * The ratio, and why it is a ratio rather than a fixed pair, live in
+ * `grid-article`. The skeleton in loading.tsx is drawn on the same pair, so
+ * the two cannot drift apart.
  */
-const COLUMNS =
-  "lg:grid lg:grid-cols-[minmax(0,800fr)_minmax(0,300fr)] lg:gap-x-gutter";
+const COLUMNS = "lg:grid lg:grid-article lg:gap-x-gutter";
 
 /** First paragraph, trimmed to a length that search results will not cut. */
 function summarise(article: ArticleDetail): string {
@@ -187,18 +185,11 @@ export default async function ArticlePage({ params }: ArticleParams) {
                 layout="grid"
               />
 
-              {/*
-                Titled "Подборка дня" rather than the article's category: the
-                block is an editor's daily pick, and the design sets this one
-                head in regular weight where every other head is medium.
-              */}
+              {/* Titled for the editor's daily pick rather than the article's category. */}
               <RelatedBlock
                 title={strings.article.dailyPick}
-                href={`/${article.category.slug}/`}
-                seeAllLabel={strings.sections.seeAll}
                 articles={sameCategory}
                 layout="feature"
-                titleWeight="normal"
               />
 
               <RelatedBlock

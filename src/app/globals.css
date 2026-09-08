@@ -148,6 +148,62 @@
   grid-template-columns: minmax(0, 633fr) minmax(0, 307fr);
 }
 
+/*
+ * The article page's own pair: 800 + 20 + 300, the 1121 "Content" frame that
+ * page is drawn in rather than the 1280 the header and footer use.
+ *
+ * Ratios for the same reason `grid-rail` gives: neither column is at its
+ * design width until the viewport reaches 1440, so the two have to give
+ * ground together.
+ */
+@utility grid-article {
+  grid-template-columns: minmax(0, 800fr) minmax(0, 300fr);
+}
+
+/*
+ * Loading placeholders (Claude Design "News article skeleton").
+ *
+ * The sweep is a background-position animation across an over-wide gradient,
+ * not a moving pseudo-element: a bar is then one element with no stacking
+ * context of its own, which matters when a page draws twenty of them.
+ *
+ * `skeleton-accent` is the same sweep in blue-grey, for a bar sitting on the
+ * AttentionText panel - the plain grey has too little contrast against that
+ * tint to read as a placeholder.
+ */
+@keyframes p24-skeleton {
+  from {
+    background-position: 180% 0;
+  }
+  to {
+    background-position: -80% 0;
+  }
+}
+
+@utility skeleton {
+  background-image: linear-gradient(90deg, #edf0f3 0%, #f7f9fa 45%, #edf0f3 90%);
+  background-size: 220% 100%;
+  animation: p24-skeleton 1.4s linear infinite;
+}
+
+@utility skeleton-accent {
+  background-image: linear-gradient(90deg, #e3e9f1 0%, #f0f4f9 45%, #e3e9f1 90%);
+  background-size: 220% 100%;
+  animation: p24-skeleton 1.4s linear infinite;
+}
+
+/*
+ * Unlayered on purpose. `@utility` compiles into `@layer utilities`, and an
+ * unlayered rule outranks every layer no matter where it sits in the file, so
+ * this stops the sweep without the `!important` the design file needed.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .skeleton-accent {
+    animation: none;
+  }
+}
+
 html {
   -webkit-font-smoothing: antialiased;
 }

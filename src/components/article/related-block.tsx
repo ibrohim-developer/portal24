@@ -27,7 +27,6 @@ export function RelatedBlock({
   articles,
   layout,
   moreLabel,
-  titleWeight,
 }: {
   title: string;
   href?: string;
@@ -35,7 +34,6 @@ export function RelatedBlock({
   articles: Article[];
   layout: "grid" | "feature" | "text";
   moreLabel?: string;
-  titleWeight?: "medium" | "normal";
 }) {
   if (articles.length === 0) return null;
 
@@ -47,17 +45,20 @@ export function RelatedBlock({
         title={title}
         href={href}
         linkLabel={seeAllLabel}
-        titleWeight={titleWeight}
       />
 
       {layout === "feature" ? (
         <div className="flex flex-col gap-gutter lg:grid lg:grid-cols-[minmax(0,528fr)_minmax(0,252fr)] lg:items-start">
           <div className="min-w-0">
-            <NewsCard article={first} size="lg" />
+            <NewsCard article={first} size="lg" column="article" />
           </div>
           <div className="grid min-w-0 gap-gutter sm:grid-cols-2 lg:grid-cols-1">
             {rest.slice(0, 2).map((article) => (
-              <NewsCard key={article.id} article={article} />
+              <NewsCard
+                key={article.id}
+                article={article}
+                column="article"
+              />
             ))}
           </div>
         </div>
@@ -72,7 +73,11 @@ export function RelatedBlock({
                 inset
               />
             ) : (
-              <NewsCard key={article.id} article={article} />
+              <NewsCard
+                key={article.id}
+                article={article}
+                column="article"
+              />
             ),
           )}
         </div>

@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Photo } from "./photo";
 import { TextBlock } from "./text-block";
 import { canOptimizeImage } from "@/lib/images";
 import type { Article } from "@/lib/news/types";
@@ -24,7 +23,7 @@ export function NewsRow({
     <article className="group/card relative flex gap-3 border-b border-hairline pb-gutter">
       {article.coverImage ? (
         <div className="size-[150px] shrink-0 overflow-hidden">
-          <Image
+          <Photo
             src={article.coverImage.url}
             alt=""
             width={article.coverImage.width}

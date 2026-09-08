@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { cn } from "@/lib/cn";
 
 /**
@@ -13,18 +11,19 @@ import { cn } from "@/lib/cn";
  * The design fixes the desktop panel at 675px, matching the intro column next
  * to it; stretching to the row instead keeps the two aligned once the copy is
  * translated into uz and en, which the fixed height would clip.
+ *
+ * The download button is inert on purpose: there is no media kit file to serve
+ * yet, so it keeps the design's affordance without navigating anywhere.
  */
 export function MediaKitPanel({
   title,
   items,
   downloadLabel,
-  href,
   className,
 }: {
   title: string;
   items: readonly { title: string; text: string }[];
   downloadLabel: string;
-  href: string;
   className?: string;
 }) {
   return (
@@ -45,13 +44,13 @@ export function MediaKitPanel({
         ))}
       </dl>
 
-      <Link
-        href={href}
-        className="flex items-center justify-center gap-2 bg-highlight px-6 py-3 text-body text-ink-900 transition-opacity hover:opacity-90"
+      <button
+        type="button"
+        className="flex cursor-pointer items-center justify-center gap-2 bg-highlight px-6 py-3 text-body text-ink-900 transition-opacity hover:opacity-90"
       >
         <DownloadIcon />
         {downloadLabel}
-      </Link>
+      </button>
     </section>
   );
 }
