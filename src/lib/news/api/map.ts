@@ -1,5 +1,11 @@
 import type { ApiArticle, ApiCategory } from "./client";
-import type { Article, ArticleImage, Category } from "../types";
+import { htmlToBlocks } from "./html";
+import type {
+  Article,
+  ArticleDetail,
+  ArticleImage,
+  Category,
+} from "../types";
 
 /**
  * Uzbek Cyrillic -> Latin, enough to build a URL slug from a category name.
@@ -125,5 +131,24 @@ export function mapArticle(article: ApiArticle): Article {
     coverImage: mapCover(article),
     publishedAt: parseApiDate(article.created_at),
     author: null,
+  };
+}
+
+/**
+ * One article page.
+ *
+ * The three nulls are fields the CMS has no column for, not omissions here:
+ * `/news/{slug}` carries no byline, no photo credit and no modification
+ * timestamp. Each has a `? :` guard at its render site already, so the page
+ * simply draws without them.
+ */
+export function mapArticleDetail(article: ApiArticle): ArticleDetail {
+  return {
+    ...mapArticle(article),
+    author: null,
+    coverCaption: null,
+    coverCredit: null,
+    updatedAt: null,
+    body: htmlToBlocks(article.content),
   };
 }

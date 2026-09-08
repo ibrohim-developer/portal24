@@ -1,7 +1,25 @@
 import { ArticleFigure } from "./article-figure";
 import { AttentionText } from "./attention-text";
 import { cn } from "@/lib/cn";
-import type { ArticleBlock } from "@/lib/news/types";
+import type { ArticleBlock, InlineSpan } from "@/lib/news/types";
+
+/** `<ol>` or `<ul>`, picked by the block rather than by two near-identical cases. */
+function ListTag({
+  ordered,
+  className,
+  children,
+}: {
+  ordered: boolean;
+  className: string;
+  children: React.ReactNode;
+}) {
+  const Tag = ordered ? "ol" : "ul";
+  return (
+    <Tag className={cn(className, ordered ? "list-decimal" : "list-disc")}>
+      {children}
+    </Tag>
+  );
+}
 
 /**
  * Vertical rhythm, read off the Figma frames rather than picked.
@@ -21,6 +39,50 @@ function gapBefore(block: ArticleBlock, previous: ArticleBlock): string {
   if (previous.kind === "image") return "mt-10";
   if (previous.kind === "heading") return "mt-5 lg:mt-7";
   return "mt-4 lg:mt-5";
+}
+
+/**
+ * The marked-up runs inside a paragraph or list item.
+ *
+ * Links are the reason spans exist at all - the newsroom cites its sources,
+ * and most CMS articles carry at least one. They are underlined rather than
+ * only recoloured, because the body's accent is also its hover colour and a
+ * colour-only link is invisible to a reader who cannot separate the two.
+ */
+function Spans({ spans }: { spans: InlineSpan[] }) {
+  return (
+    <>
+      {spans.map((span, i) => {
+        if (span.kind === "link") {
+          const external = span.href.startsWith("http");
+          return (
+            <a
+              key={i}
+              href={span.href}
+              // Editorial links point off-site; `noreferrer` goes with the new
+              // tab, and `nofollow` is what the CMS's own editor writes.
+              {...(external
+                ? { target: "_blank", rel: "noopener noreferrer nofollow" }
+                : {})}
+              className="underline underline-offset-2 transition-colors hover:text-accent"
+            >
+              {span.text}
+            </a>
+          );
+        }
+
+        if (span.kind === "emphasis") {
+          return (
+            <strong key={i} className="font-medium">
+              {span.text}
+            </strong>
+          );
+        }
+
+        return <span key={i}>{span.text}</span>;
+      })}
+    </>
+  );
 }
 
 export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
@@ -48,10 +110,30 @@ function Block({ block }: { block: ArticleBlock }) {
       );
 
     case "paragraph":
-      return <p className="text-lead text-ink-900">{block.text}</p>;
+      return (
+        <p className="text-lead text-ink-900">
+          <Spans spans={block.spans} />
+        </p>
+      );
 
     case "callout":
       return <AttentionText>{block.text}</AttentionText>;
+
+    case "list":
+      // `list-outside` with the padding on the element, so a wrapped second
+      // line aligns with the first rather than sliding under the marker.
+      return (
+        <ListTag
+          ordered={block.ordered}
+          className="list-outside space-y-2 pl-6 text-lead text-ink-900"
+        >
+          {block.items.map((item, i) => (
+            <li key={i}>
+              <Spans spans={item} />
+            </li>
+          ))}
+        </ListTag>
+      );
 
     case "image":
       return (

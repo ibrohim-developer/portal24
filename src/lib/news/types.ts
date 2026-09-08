@@ -148,9 +148,10 @@ export interface AuthorProfile extends Author {
  */
 export type ArticleBlock =
   | { kind: "heading"; text: string }
-  | { kind: "paragraph"; text: string }
+  | { kind: "paragraph"; spans: InlineSpan[] }
   /** The "AttentionText" pull-quote - accent rule, accent text, 8% accent panel. */
   | { kind: "callout"; text: string }
+  | { kind: "list"; ordered: boolean; items: InlineSpan[][] }
   | {
       kind: "image";
       image: ArticleImage;
@@ -158,6 +159,33 @@ export type ArticleBlock =
       /** Photo credit, stamped after the caption's separator dot. */
       credit: string | null;
     };
+
+/**
+ * A run of text inside a paragraph or a list item.
+ *
+ * Paragraphs carry these rather than a plain string because the newsroom cites
+ * its sources: 42 of 50 CMS articles sampled contain at least one link, and
+ * flattening those to text would strip the attribution out of the reporting.
+ *
+ * Deliberately a short list. The CMS's editor can emit far more than this, but
+ * a body block is not a document model - anything not represented here is
+ * reduced to its text by `htmlToBlocks`, which is the point of parsing the
+ * CMS's HTML instead of rendering it.
+ */
+export type InlineSpan =
+  | { kind: "text"; text: string }
+  | { kind: "emphasis"; text: string }
+  | { kind: "link"; text: string; href: string };
+
+/** The common case: one unstyled run, for fixtures and for plain paragraphs. */
+export function plainSpans(text: string): InlineSpan[] {
+  return [{ kind: "text", text }];
+}
+
+/** The text of a run of spans, with the marks dropped - for excerpts and alt. */
+export function spansToText(spans: InlineSpan[]): string {
+  return spans.map((span) => span.text).join("");
+}
 
 /** A single article page: everything `Article` has, plus the body. */
 export interface ArticleDetail extends Article {

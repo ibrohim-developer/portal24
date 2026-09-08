@@ -11,15 +11,26 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { AdsSlot } from "@/components/ui/ads-slot";
 import { Container } from "@/components/ui/container";
 import { getNewsRepository } from "@/lib/news/repository";
-import type { ArticleDetail } from "@/lib/news/types";
+import { spansToText, type ArticleDetail } from "@/lib/news/types";
 import { strings } from "@/lib/strings";
 
-/** Every article is built ahead of time, so an unknown slug is a 404, not a render. */
-export const dynamicParams = false;
+/**
+ * A published story changes rarely once filed - a correction, mostly - so this
+ * lags the feeds deliberately.
+ */
+export const revalidate = 900;
 
-/** Every published slug, so the export can render one file per story. */
+/**
+ * The archive is 1,373 stories and grows daily, so only the recent run is
+ * prebuilt (see `getSlugs`) and anything older renders on its first request.
+ * `getArticle` returns null for a slug the CMS does not have, which is still
+ * a 404 - this opens the archive, not the door.
+ */
+export const dynamicParams = true;
+
+/** The newest stories, so the common case is served without a render. */
 export async function generateStaticParams() {
-  const slugs = await getNewsRepository().getSlugs();
+  const slugs = await getNewsRepository("api").getSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -41,7 +52,10 @@ const COLUMNS =
 function summarise(article: ArticleDetail): string {
   const lede = article.body.find((b) => b.kind === "paragraph");
   if (!lede) return article.title;
-  return lede.text.length > 160 ? `${lede.text.slice(0, 157)}…` : lede.text;
+
+  // Marks dropped: this is a meta description, which is plain text.
+  const text = spansToText(lede.spans);
+  return text.length > 160 ? `${text.slice(0, 157)}…` : text;
 }
 
 export async function generateMetadata({
@@ -49,7 +63,7 @@ export async function generateMetadata({
 }: ArticleParams): Promise<Metadata> {
   const { slug } = await params;
 
-  const article = await getNewsRepository().getArticle(slug);
+  const article = await getNewsRepository("api").getArticle(slug);
   if (!article) notFound();
 
   const description = summarise(article);
@@ -73,7 +87,10 @@ export async function generateMetadata({
 export default async function ArticlePage({ params }: ArticleParams) {
   const { slug } = await params;
 
-  const repo = getNewsRepository();
+  // The CMS for the story itself. The byline card and the figures around it
+  // fall back to fixtures inside the repository, because the API carries
+  // neither - see api-repository.
+  const repo = getNewsRepository("api");
 
   const article = await repo.getArticle(slug);
   if (!article) notFound();
