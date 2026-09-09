@@ -1,16 +1,3 @@
-/*
- * The publication's own accounts, and the marks that stand for them.
- *
- * Shared between the footer (icon + label chips on desktop, icon-only tiles on
- * mobile) and the About Us "Платформы и языки" block (2218:15363), which draws
- * the same four buttons at 24px.
- *
- * Brand marks are drawn as one even-odd path each, so the glyph is knocked out
- * of the mark rather than painted in the surface colour - the chips sit on
- * translucent white over ink-700 in the footer and on translucent ink over
- * white on the About page, which is not a colour any icon can hard-code.
- */
-
 import type { SocialNetwork } from "@/lib/news/types";
 
 /** 20 is the footer size; the About Us buttons pass 24, as the design does. */

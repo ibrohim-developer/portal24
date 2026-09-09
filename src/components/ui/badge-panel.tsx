@@ -1,16 +1,5 @@
 import { cn } from "@/lib/cn";
 
-/**
- * Dark panel with a yellow label straddling its top edge.
- *
- * The design uses this shape twice with different type and different amounts
- * of overlap: "Цифра дня" on the main page (1852:13205) and "Наша цель" on the
- * About Us page (2196:16388). Only the geometry lives here - the callers own
- * their own type scale, padding and how far the label bites into the panel.
- *
- * `offset` is the gap between the top of the box and the top of the panel, so
- * the label overhang is `label height - offset`.
- */
 export function BadgePanel({
   label,
   offset,

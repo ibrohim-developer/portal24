@@ -3,14 +3,6 @@ import type { ReactNode } from "react";
 
 import { ChevronRightIcon } from "@/components/ui/icons";
 
-/**
- * Section heading with an optional "see all" link, from the Figma SectionHead
- * component (title 36/45, link 16/24, 8px gap).
- *
- * Some blocks hide the link and put controls there instead (the numbers row
- * uses prev/next buttons); pass those as `actions` - as a single element that
- * brings its own alignment, since it is placed in the flex row unwrapped.
- */
 export function SectionHead({
   title,
   href,

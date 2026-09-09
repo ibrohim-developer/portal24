@@ -1,12 +1,13 @@
-/**
- * Icons that more than one surface draws. Single-use marks stay next to the
- * component that draws them; brand marks live in `social.tsx`.
- */
-
 /** Header button, and the submit control inside the mobile search field. */
 export function SearchIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
       <circle cx="9" cy="9" r="6.25" stroke="currentColor" strokeWidth="1.5" />
       <path
         d="m13.5 13.5 3.5 3.5"

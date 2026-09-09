@@ -12,23 +12,12 @@ import { SectionHead } from "@/components/ui/section-head";
 import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 
-/** Every author is built ahead of time, so an unknown slug is a 404. */
 export const dynamicParams = false;
 
-/**
- * How many stories each of the two blocks renders.
- *
- * "Популярные статьи" is a lead card plus two, so it is always exactly three.
- * "Все статьи" builds three rows of three, then puts the rest behind the
- * "Показать ещё" button - see `ArticleFeed` for why they are all in the HTML
- * either way. FEED_LIMIT is the ceiling on one author's page; when the admin
- * API can paginate it becomes the first page of a real `offset` query.
- */
 const POPULAR_LIMIT = 3;
 const FEED_INITIAL = 9;
 const FEED_LIMIT = 24;
 
-/** Every author slug, so the export can render one file per author. */
 export async function generateStaticParams() {
   const slugs = await getNewsRepository().getAuthorSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -59,20 +48,6 @@ export async function generateMetadata({
   };
 }
 
-/**
- * Author page (Figma "Web" page, 1981:17549) - the destination of the
- * "Все материалы автора" button on every article.
- *
- * Laid out on the index-page grid (960 content + 300 rail inside the 1280
- * container), not the article page's narrower 800 + 300.
- *
- * Below the profile header the design runs two blocks: "Популярные статьи" as
- * the main page's 633 + 307 lead layout, then "Все статьи" as a plain three-up
- * grid of 307px cards. Both keep the card's "date, time · author" byline.
- *
- * The hero above them follows the design screenshot rather than the Figma node
- * itself - see the note on `AuthorHero` for what that leaves estimated.
- */
 export default async function AuthorPage({ params }: AuthorParams) {
   const { slug } = await params;
 
@@ -104,21 +79,10 @@ export default async function AuthorPage({ params }: AuthorParams) {
 
       <main className="flex-1 py-gutter">
         <Container>
-          {/*
-            20px between the content column and the rail, not the 82px section
-            rhythm: the design is 960 + 20 + 300 = 1280 exactly, and a section
-            gap here steals 62px from the content column, shrinking every
-            `md` card from its designed 307px to 245px. The section gap is
-            still right on mobile, where the rail stacks underneath.
-          */}
           <div className="flex flex-col gap-section lg:grid lg:grid-rail lg:items-start lg:gap-gutter">
             <div className="flex min-w-0 flex-col gap-section">
               <AuthorHero author={author} />
 
-              {/*
-                Needs the full lead + two shape to be itself; with fewer than
-                three stories the author only gets "Все статьи".
-              */}
               {popularLead && popularRest.length === 2 ? (
                 <section className="flex flex-col gap-head">
                   <SectionHead title={strings.author.popularTitle} />

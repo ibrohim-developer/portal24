@@ -3,16 +3,6 @@ import { cn } from "@/lib/cn";
 import { canOptimizeImage } from "@/lib/images";
 import type { ArticleImage } from "@/lib/news/types";
 
-/**
- * Photo plus the design's caption line (Figma 1872:11889): caption, separator
- * dot, credit - all ink-600 caption type, 16px under the image.
- *
- * The frame is a fixed crop, as it is on the cards: the design draws the hero
- * at 800x540 and the inline shot at 801x1000, and a CMS photo will not arrive
- * at either ratio. Leaving the ratio to the file does not work even in
- * principle - once the image loads, its own intrinsic ratio overrides the one
- * the width/height attributes imply, so the frame has to be stated in CSS.
- */
 export function ArticleFigure({
   image,
   caption,
@@ -39,11 +29,6 @@ export function ArticleFigure({
         height={image.height}
         priority={priority}
         sizes={sizes}
-        // Body images are frequently hot-linked from other publications, and
-        // `next/image` throws on a host the config does not list rather than
-        // degrading - one pasted image took the whole article page down.
-        // Unoptimized skips the loader, and with it that check. See
-        // `canOptimizeImage` for why the answer is not a longer allowlist.
         unoptimized={!canOptimizeImage(image.url)}
         className={cn("w-full object-cover", aspect)}
       />

@@ -5,29 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { SectionHead } from "@/components/ui/section-head";
 
-/**
- * A titled row that scrolls sideways off the right edge of the page.
- *
- * Shared by "Цифры последних дней" and "Главное за минуту", which differ only
- * in what their cards contain. The head keeps to the 960 content column, but
- * the track is full-bleed, so the component expects to be rendered as a direct
- * child of <main>, OUTSIDE <Container> - see the main page - and brings its own
- * Container back for the head alone.
- *
- * The inset is a MARGIN on the left and a PADDING on the right, and the
- * difference matters: overflow clips at the padding box, so a left padding
- * would let scrolled-out cards stay visible all the way to the edge of the
- * screen. The margin puts the clip edge on the content column instead, which is
- * where the design cuts them off. On the right there is nothing to clip - the
- * padding just stops the last card short of the screen edge at the end of the
- * row.
- *
- * The row stays a native scroller, so touch and keyboard still work when the
- * buttons do not; they are the only part of the block that needs JS, and the
- * only part mobile drops entirely.
- *
- * Children are the `<li>` cards.
- */
 export function BleedCarousel({
   title,
   prevLabel,
@@ -144,7 +121,13 @@ function ArrowButton({
       aria-label={label}
       className="flex h-10 w-18 items-center justify-center bg-hairline text-ink-900 transition-colors hover:bg-ink-900/10 disabled:opacity-30 disabled:hover:bg-hairline"
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d={next ? "M4 12h16M14 6l6 6-6 6" : "M20 12H4M10 6l-6 6 6 6"}
           stroke="currentColor"

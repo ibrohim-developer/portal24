@@ -7,27 +7,6 @@ import { footerNavItems } from "@/lib/categories";
 import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 
-/**
- * Footer from the Figma "Футер" page (111:247).
- *
- * The design draws two frames of one component: "Десктоп версия" and
- * "Мобильная версия". They differ in three ways, all handled here by
- * breakpoint rather than by shipping two trees:
- *
- *  - the Telegram call-out is mobile-only (desktop carries that CTA in the
- *    header instead, so this one switches on `nav` with the header rather
- *    than on `lg` with the columns),
- *  - social links are icon + label chips on desktop, icon-only tiles on mobile,
- *  - the columns stack.
- *
- * Where the two frames disagree on copy the desktop frame wins: its legal block
- * carries the real registration details, while the mobile frame still has
- * "[ООО Название] | [ФИО]" placeholders in the same slot.
- *
- * The panel is ink-700 (#394e63) straight from the file; every surface on top
- * of it - call-out box, social chips, the divider - is plain white at low
- * opacity, which is how the design builds them.
- */
 export async function SiteFooter() {
   const items = footerNavItems(await getNewsRepository("api").getCategories());
 
@@ -146,4 +125,3 @@ function FooterColumn({
     </div>
   );
 }
-

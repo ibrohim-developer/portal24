@@ -4,25 +4,8 @@ import { NewsRow } from "@/components/ui/news-row";
 import { SectionHead } from "@/components/ui/section-head";
 import type { Article } from "@/lib/news/types";
 
-/**
- * The three arrangements the main page's titled feeds come in.
- *
- *  - `featured`  one large story with two stacked beside it
- *  - `grid`      two rows of three equal cards
- *  - `rows`      two columns of three thumbnail rows
- *
- * Which one a block gets is not derivable from its position: see
- * BLOCK_LAYOUTS on the main page.
- */
 export type FeedLayout = "featured" | "grid" | "rows";
 
-/**
- * A titled feed with a "see all" link.
- *
- * Shared by the category blocks and by "#Популярное", which is not a category
- * at all - the component only ever sees a title and a href, so a cross-cutting
- * feed fits it exactly as well as a category does.
- */
 export function FeedBlock({
   title,
   href,

@@ -3,20 +3,6 @@ import { BleedCarousel } from "@/components/ui/bleed-carousel";
 import { formatStatDate } from "@/lib/format";
 import type { Stat } from "@/lib/news/types";
 
-/**
- * "Цифры последних дней" (Figma 1852:13409).
- *
- * Cards are 306x500 with the photo full-bleed - no scrim, no dark panel - and
- * a white info card inset 16px from the top corners (274x121). That panel has
- * no padding of its own: number, copy and date run edge to edge and the line
- * boxes do all the spacing, which is why the gaps below are exactly 12px.
- *
- * The SectionHead "see all" link is hidden in this block (Link node is `hidden`
- * in the Figma); the carousel's prev/next pair takes its place. Everything
- * about the row itself - the full-bleed track, the arrows, the clipping - lives
- * in BleedCarousel; this file is only the cards.
- */
-
 /** Card width + gutter. */
 const STEP = 326;
 

@@ -11,35 +11,15 @@ import { NewsCard } from "@/components/ui/news-card";
 import { getNewsRepository } from "@/lib/news/repository";
 import { strings } from "@/lib/strings";
 
-/**
- * The "Популярное за неделю" block: the lead arrangement (one story plus the
- * two beside it) and one row of three under it, which is where the design's
- * frame ends.
- */
 const POPULAR_LIMIT = 6;
 
 export const metadata: Metadata = {
   title: strings.search.title,
   description: strings.search.description,
   alternates: { canonical: "/search/" },
-  // A results page is not a landing page: the built HTML carries no query,
-  // so anything indexed here would be the empty state.
   robots: { index: false, follow: true },
 };
 
-/**
- * Search (Figma "Web" page, 1934:21889) - where the header's search button
- * and the burger menu's field both land.
- *
- * Under `output: "export"` this is one static file for the whole route, so
- * the query cannot be read on the server: the page renders the shell, hands
- * the full article index to `SearchView`, and the browser filters it. The
- * `<Suspense>` boundary is what `useSearchParams` needs on a prerendered
- * route - the build fails without it.
- *
- * The design opens on the field, not on a page title: there is no visible
- * "Поиск" heading above it, so the h1 here is for the document outline only.
- */
 export default async function SearchPage() {
   const repo = getNewsRepository("api");
 
@@ -77,21 +57,13 @@ export default async function SearchPage() {
               index={index}
               popular={
                 lead ? (
-                  // Lead and grid are one continuous feed, so they share the
-                  // 20px card gutter rather than the 82px section rhythm.
                   <div className="flex flex-col gap-gutter">
-                    <LeadBlock
-                      lead={lead}
-                      secondary={secondary}
-                    />
+                    <LeadBlock lead={lead} secondary={secondary} />
 
                     {grid.length > 0 ? (
                       <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
                         {grid.map((article) => (
-                          <NewsCard
-                            key={article.id}
-                            article={article}
-                          />
+                          <NewsCard key={article.id} article={article} />
                         ))}
                       </div>
                     ) : null}

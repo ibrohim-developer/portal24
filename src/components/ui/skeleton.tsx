@@ -1,16 +1,5 @@
 import { cn } from "@/lib/cn";
 
-/**
- * One loading placeholder bar (Claude Design "News article skeleton").
- *
- * Width and height ride an inline style rather than Tailwind utilities,
- * because the design sizes most bars as a fraction of their column - "72%",
- * "41%", "38%" - and Tailwind's scanner cannot see a class name assembled at
- * runtime, so `w-[${width}]` would compile to nothing at all.
- *
- * The sweep itself is the `skeleton` utility in globals.css, which is also
- * where reduced motion turns it off.
- */
 export function Bar({
   width,
   height,

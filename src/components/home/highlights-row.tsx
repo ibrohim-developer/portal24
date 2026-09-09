@@ -4,20 +4,6 @@ import Link from "next/link";
 import { BleedCarousel } from "@/components/ui/bleed-carousel";
 import type { Highlight } from "@/lib/news/types";
 
-/**
- * "Главное за минуту" - a row of short vertical videos, shown as their covers.
- *
- * The covers are finished artwork: headline, badge and branding are all burnt
- * into the picture, so the card draws nothing on top of the image. The title
- * only ever reaches the accessible name of the link.
- *
- * NOT read from the frame - the Figma MCP tool-call quota was spent before this
- * block was built. The card width matches the numbers row at 306, measured off
- * the design export; the 9:16 height is inferred from the shape of the covers,
- * because the screenshot cuts off before their bottom edge. Worth a diff
- * against the node when quota returns.
- */
-
 /** Card width + gutter, as in the numbers row. */
 const STEP = 326;
 

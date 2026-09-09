@@ -4,18 +4,6 @@ import {
   type AboutFocusTopic,
 } from "@/lib/categories";
 
-/**
- * "Редакция уделяет особое внимание темам" - four tinted cells in a 2x2 grid
- * (Figma 2196:16591 desktop / 2218:16903 mobile).
- *
- * The cells borrow the category tints from the news cards but carry only a
- * label, so they are plain divs rather than the TextBlock component the design
- * builds them from.
- *
- * The labels are their own strings rather than the nav names. They read as a
- * list after "eʼtibor qaratadi", so a language that inflects them there - as
- * the design's Russian does - can set them without disturbing the nav.
- */
 export function FocusGrid({
   labels,
 }: {

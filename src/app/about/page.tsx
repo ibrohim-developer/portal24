@@ -16,16 +16,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about/" },
 };
 
-/**
- * About Us (Figma "Web" page, section 2196:16803 - Desktop 2196:16341 and
- * Mobile 2218:16614).
- *
- * The two frames hold the same six blocks in different orders: desktop hangs
- * the media kit beside the intro column and runs the rest full width beneath
- * it, mobile stacks everything and drops the media kit to the bottom. One tree
- * covers both - a flex column on mobile with the panel ordered last, switching
- * to a two-track grid at lg where source order is the layout order again.
- */
 export default function AboutPage() {
   const about = strings.about;
 
@@ -105,11 +95,6 @@ export default function AboutPage() {
                 </BadgePanel>
               </div>
 
-              {/*
-                The legal notice and the masthead are one stacked block in the
-                left track, not the two tracks of the grid - the design runs
-                them down the same edge and keeps the editor's name on one line.
-              */}
               <div className="flex flex-col gap-head lg:gap-10">
                 <section className="flex flex-col gap-3">
                   <h2 className="text-title-sm font-medium text-ink-900 lg:text-title-lg">
@@ -131,7 +116,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Mobile has no side rail in this design, only the leaderboard. */}
             <aside className="hidden min-w-0 lg:block">
               <AdsSlot
                 width={300}

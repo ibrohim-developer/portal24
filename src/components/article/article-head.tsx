@@ -3,18 +3,6 @@ import Link from "next/link";
 import { formatArticleDate } from "@/lib/format";
 import type { ArticleDetail } from "@/lib/news/types";
 
-/**
- * Category, headline, byline (Figma HeadNewsText 1852:19335). 20px between
- * all three; the headline drops from 36/45 to 24/32 on mobile.
- *
- * The byline is ink-600 here, not the ink-400 that the card TextBlock uses -
- * sampled from the file, not carried over from the card.
- *
- * The design's stamp reads "Обновлено 30 минут назад". We keep the "Обновлено"
- * but print an absolute time, for the reason `formatArticleDate` documents:
- * under static export a relative string is frozen at build and drifts further
- * from the truth every hour.
- */
 export function ArticleHead({
   article,
   updatedLabel,

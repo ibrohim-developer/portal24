@@ -1,10 +1,6 @@
 import { BadgePanel } from "@/components/ui/badge-panel";
 import type { Stat } from "@/lib/news/types";
 
-/**
- * "Цифра дня" - dark panel with a yellow badge straddling its top edge
- * (Figma 1852:13205). The number is uppercased by the design, not by the data.
- */
 export function NumberOfDay({ stat, label }: { stat: Stat; label: string }) {
   return (
     <BadgePanel

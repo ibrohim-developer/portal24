@@ -21,19 +21,7 @@ function ListTag({
   );
 }
 
-/**
- * Vertical rhythm, read off the Figma frames rather than picked.
- *
- * The design groups blocks into nested "TextBlock" frames, but every gap it
- * produces falls out of four rules, so a flat list with a computed top margin
- * reproduces it without the nesting - and without the body needing to know
- * where one editorial group ends and the next begins.
- *
- * Desktop (1852:19332) / mobile (1981:14457):
- *  - 40px around a heading above it and around any image, both breakpoints
- *  - 28 / 20px between a heading and the text under it
- *  - 20 / 16px between everything else
- */
+
 function gapBefore(block: ArticleBlock, previous: ArticleBlock): string {
   if (block.kind === "heading" || block.kind === "image") return "mt-10";
   if (previous.kind === "image") return "mt-10";
@@ -41,14 +29,6 @@ function gapBefore(block: ArticleBlock, previous: ArticleBlock): string {
   return "mt-4 lg:mt-5";
 }
 
-/**
- * The marked-up runs inside a paragraph or list item.
- *
- * Links are the reason spans exist at all - the newsroom cites its sources,
- * and most CMS articles carry at least one. They are underlined rather than
- * only recoloured, because the body's accent is also its hover colour and a
- * colour-only link is invisible to a reader who cannot separate the two.
- */
 function Spans({ spans }: { spans: InlineSpan[] }) {
   return (
     <>

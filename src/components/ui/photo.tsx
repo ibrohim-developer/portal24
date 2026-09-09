@@ -5,12 +5,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/cn";
 
-/**
- * One observer for every photo on the page, not one per photo: the front page
- * draws 49 of them and they all want the same margin. The margin is generous
- * on purpose - it should fire at roughly the point the browser decides to
- * fetch a lazy image, so the sweep starts when the wait starts.
- */
 let observer: IntersectionObserver | null = null;
 const waiting = new WeakMap<Element, () => void>();
 

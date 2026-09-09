@@ -9,20 +9,6 @@ import { SOCIAL, TELEGRAM_URL, TelegramIcon } from "@/components/ui/social";
 import type { NavItem } from "@/lib/categories";
 import { strings } from "@/lib/strings";
 
-/**
- * Mobile navigation, from the Figma "Навигация" section (2218:17584).
- *
- * The panel repeats the collapsed header's own row - logo and the burger in
- * its close state - so nothing shifts as it opens. The design puts a language
- * switcher between them, which this site has no use for. Under the row: the
- * search field, the category list centred, the four social tiles, and the
- * Telegram CTA. The category dots and the desktop "Biz haqimizda" link are not
- * separated here; the design runs it on as the last item of the list.
- *
- * The only client component on the main page. Everything else renders on the
- * server, so with JS disabled the page still reads fine - only this toggle is
- * inert, which is why the links it contains are duplicated in the footer.
- */
 export function BurgerMenu({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false);
 
@@ -155,15 +141,31 @@ export function BurgerMenu({ items }: { items: NavItem[] }) {
 
 function BurgerIcon() {
   return (
-    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
-      <path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" strokeWidth="1.5" />
+    <svg
+      width="20"
+      height="14"
+      viewBox="0 0 20 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M0 1h20M0 7h20M0 13h20"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
     </svg>
   );
 }
 
 function CloseIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
       <path
         d="M2 2l12 12M14 2L2 14"
         stroke="currentColor"
@@ -173,4 +175,3 @@ function CloseIcon() {
     </svg>
   );
 }
-

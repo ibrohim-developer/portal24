@@ -8,12 +8,6 @@ import type { Article } from "@/lib/news/types";
 
 export type TextBlockSize = "lg" | "md";
 
-/**
- * Headline + meta, matching the Figma TextBlock component set.
- *
- * The Figma runs text flush to the tint edge on every instance. `inset` opts a
- * caller out of that - see its note.
- */
 export function TextBlock({
   article,
   size = "md",

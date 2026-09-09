@@ -3,13 +3,6 @@ import Link from "next/link";
 
 import { cn } from "@/lib/cn";
 
-/**
- * Exported from the Figma nav (I2232:15466;1934:25004) as SVG.
- *
- * The mark is single-colour, so the footer's dark panel gets its own file with
- * the fill swapped to white rather than a CSS filter - `next/image` with
- * `unoptimized` serves the SVG as an <img>, which cannot be recoloured.
- */
 export function Logo({
   label,
   tone = "brand",
