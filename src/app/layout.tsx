@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 
 import { RouteProgress } from "@/components/layout/route-progress";
 import { fallbackFont, portalBoldFont, portalFont } from "@/lib/fonts";
+import { SITE_URL } from "@/lib/site";
 import { strings } from "@/lib/strings";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://portal24.uz",
-  ),
+  metadataBase: SITE_URL,
   title: {
     default: `${strings.site.name} - ${strings.site.tagline}`,
     template: `%s | ${strings.site.name}`,

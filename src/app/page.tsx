@@ -1,7 +1,7 @@
-import { HighlightsRow } from "@/components/home/highlights-row";
-import { NumberOfDay } from "@/components/home/number-of-day";
+// import { HighlightsRow } from "@/components/home/highlights-row";
+// import { NumberOfDay } from "@/components/home/number-of-day";
 import { PopularSidebar } from "@/components/home/popular-sidebar";
-import { StatsRow } from "@/components/home/stats-row";
+// import { StatsRow } from "@/components/home/stats-row";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdsSlot } from "@/components/ui/ads-slot";
@@ -52,16 +52,17 @@ export default async function HomePage() {
   const [
     freshPool,
     popular,
-    statOfDay,
-    recentStats,
-    highlights,
+    // Hidden until the backend serves them - see the blocks further down.
+    // statOfDay,
+    // recentStats,
+    // highlights,
     categoryFeeds,
   ] = await Promise.all([
     repo.getTopStories(LEAD_LIMIT + POPULAR_LIMIT + RAIL_LIMIT),
     repo.getPopular(POPULAR_LIMIT),
-    repo.getStatOfTheDay(),
-    repo.getRecentStats(6),
-    repo.getHighlights(6),
+    // repo.getStatOfTheDay(),
+    // repo.getRecentStats(6),
+    // repo.getHighlights(6),
     repo.getCategories().then((categories) =>
       Promise.all(
         categories.map(async (category, index) => {
@@ -128,12 +129,16 @@ export default async function HomePage() {
             <div className="flex min-w-0 flex-col gap-section">
               {lead ? <LeadBlock lead={lead} secondary={secondary} /> : null}
 
+              {/*
+                "Kun raqami" is hidden until the backend has an endpoint for
+                it; the API repository still serves fixtures here.
               {statOfDay ? (
                 <NumberOfDay
                   stat={statOfDay}
                   label={strings.sections.numberOfDay}
                 />
               ) : null}
+              */}
 
               <FeedBlock
                 articles={popular}
@@ -161,12 +166,16 @@ export default async function HomePage() {
           </div>
         </Container>
 
+        {/*
+          "Soʻnggi kunlar raqamlari" is hidden until the backend has an
+          endpoint for it; the API repository still serves fixtures here.
         <StatsRow
           stats={recentStats}
           title={strings.sections.recentNumbers}
           prevLabel={strings.a11y.prev}
           nextLabel={strings.a11y.next}
         />
+        */}
 
         <Container>
           <div className="flex flex-col gap-section lg:w-column">
@@ -174,12 +183,16 @@ export default async function HomePage() {
           </div>
         </Container>
 
+        {/*
+          "Bir daqiqada asosiysi" is hidden until the backend has an
+          endpoint for it; the API repository still serves fixtures here.
         <HighlightsRow
           highlights={highlights}
           title={strings.sections.minute}
           prevLabel={strings.a11y.prev}
           nextLabel={strings.a11y.next}
         />
+        */}
       </main>
 
       <SiteFooter />

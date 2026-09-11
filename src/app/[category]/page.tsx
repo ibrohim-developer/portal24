@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { NumberOfDay } from "@/components/home/number-of-day";
+// import { NumberOfDay } from "@/components/home/number-of-day";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AdsSlot } from "@/components/ui/ads-slot";
@@ -60,9 +60,13 @@ export default async function CategoryPage({ params }: CategoryParams) {
 
   const repo = getNewsRepository(resolved.source);
 
-  const [articles, statOfDay] = await Promise.all([
+  const [
+    articles,
+    // Hidden until the backend serves it - see "Kun raqami" below.
+    // statOfDay,
+  ] = await Promise.all([
     repo.getByCategory(category, FEED_LIMIT),
-    repo.getStatOfTheDay(),
+    // repo.getStatOfTheDay(),
   ]);
 
   const [lead, ...rest] = articles;
@@ -95,12 +99,16 @@ export default async function CategoryPage({ params }: CategoryParams) {
                   <>
                     <LeadBlock lead={lead} secondary={secondary} />
 
+                    {/*
+                      "Kun raqami" is hidden until the backend has an endpoint
+                      for it; the API repository still serves fixtures here.
                     {statOfDay ? (
                       <NumberOfDay
                         stat={statOfDay}
                         label={strings.sections.numberOfDay}
                       />
                     ) : null}
+                    */}
 
                     {grid.length > 0 ? (
                       <ArticleFeed

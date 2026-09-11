@@ -79,48 +79,55 @@ export const strings = {
       inflation: "Inflyatsiya"
     }
   },
+  /*
+   * The About Us page. Its job is contact: who to call to advertise, where to
+   * send a tip, who answers for the publication, and under which certificate
+   * it is registered - so the copy here is the masthead, not a mission
+   * statement.
+   */
   about: {
-    title: "Portal24 — Oʻzbekistonning mustaqil internet nashri.",
-    focusIntro: "Tahririyat quyidagi mavzularga alohida eʼtibor qaratadi:",
-    focus: {
-      eco: "Ekologiya",
-      education: "Taʼlim",
-      tech: "Texnologiya",
-      finance: "Moliya"
-    },
-    coverage: "Shuningdek, har kuni Oʻzbekiston, Markaziy Osiyo mamlakatlari va dunyodagi dolzarb voqealarni yoritib boradi.",
-    platformsTitle: "Platformalar va tillar",
-    platformsText: "Portal24 materiallarni rus va oʻzbek tillarida chop etadi. Biz oʻzimizning raqamli platformalarimizda ishlaymiz, jumladan:",
-    goalLabel: "Bizning maqsadimiz",
-    goalValue: "Ishonchlilik",
-    goalText: "Oʻquvchilarga oʻz vaqtida, tekshirilgan va ishonchli maʼlumot yetkazish",
+    title: "Portal24 — Oʻzbekistondagi eng tez rivojlanayotgan OAVlardan biri.",
+    intro: "Biz mamlakat va dunyodagi muhim voqealarni tezkor yoritamiz, jamiyatdagi dolzarb mavzularni koʻtaramiz va odamlarni qiziqtirgan masalalar haqida gapiramiz. Asosiy maqsadimiz — odamlarning ovozini eshittirish.",
+    /** The two contact columns: a phone number, and a tip line on Telegram. */
+    adsTitle: "Reklama boʻlimi",
+    /** Dialled as tel:+998887111331 - the spaces are for reading only. */
+    phone: "+998 88 711 13 31",
+    tipTitle: "Yangilik taklif etish",
+    tipAction: "Telegram",
+    /*
+     * Editor and founder carry the same wording as the footer's masthead
+     * lines, minus the label the footer runs into the same sentence. Keep the
+     * two in step - both quote the registration record.
+     */
+    editorLabel: "Bosh muharrir:",
+    editorName: "Qadamov Javohir Azizbek oʻgʻli",
+    founderLabel: "Muassis:",
+    founderName: "«AXBOROT MEDIA» MCHJ",
     legalTitle: "Huquqiy maʼlumot",
     legalText: "Oʻzbekiston Respublikasi Prezidenti Administratsiyasi huzuridagi Axborot va ommaviy kommunikatsiyalar agentligida roʻyxatdan oʻtgan. Internet-OAV roʻyxatdan oʻtganligi toʻgʻrisidagi guvohnoma №2588770, 2024-yil 2-oktabr.",
-    editorLabel: "Bosh muharrir",
-    editorName: "Qadamov Javohir",
     mediaKit: {
       title: "Mediakit",
-      download: "Yuklab olish",
+      download: "Yuklab oling",
       items: [
         {
-          title: "Loyiha va raqamlar haqida",
-          text: "Biz kimmiz, asosiy koʻrsatkichlar, qamrov va auditoriyamiz hajmi"
+          title: "Loyiha va raqamlar",
+          text: "Biz haqimizda, asosiy koʻrsatkichlar, qamrov va auditoriyamiz hajmi"
         },
         {
           title: "Auditoriya portreti",
-          text: "Batafsil demografiya (jins, yosh, hudud) va oʻquvchilarimiz qiziqishlari"
+          text: "Oʻquvchilarimizning batafsil demografiyasi (jinsi, yoshi, geografiyasi), qiziqishlari va auditoriya hajmi"
         },
         {
           title: "Reklama formatlari",
-          text: "Tayyor integratsiya variantlari — native postlar va bannerlardan yirik maxsus loyihalargacha"
+          text: "Native postlar va bannerlardan tortib, yirik maxsus loyihalargacha — reklama integratsiyalarining tayyor formatlari"
         },
         {
-          title: "Narxlar va shartlar",
-          text: "Dolzarb narxlar, paket takliflari va amalga oshirish muddatlari"
+          title: "Prays-list va shartlar",
+          text: "Amaldagi narxlar, paket takliflari va loyihalarni amalga oshirish muddatlari"
         },
         {
           title: "Bizning keyslarimiz",
-          text: "Natijalari raqamlarda koʻrsatilgan muvaffaqiyatli reklama kampaniyalari namunalari"
+          text: "Natijalar raqamlarda koʻrsatilgan muvaffaqiyatli reklama kampaniyalari namunalari"
         }
       ]
     }

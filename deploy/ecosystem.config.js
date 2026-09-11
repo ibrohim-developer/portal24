@@ -35,10 +35,11 @@ module.exports = {
         PORT: 3000,
       },
 
-      // `.next/cache` is the ISR cache and must survive a restart, so it lives
-      // in the checkout rather than anywhere pm2 would clear. Do not add a
-      // deploy step that wipes it: an empty cache means the first reader of
-      // every page waits for a full render.
+      // Regenerated pages are written to `.next/server/app` and resized images
+      // to `.next/cache/images`, both inside the checkout, so the user pm2 runs
+      // as needs write access to `.next`. `next build` keeps `.next/cache` but
+      // replaces the rest; do not add a deploy step that wipes the cache, or
+      // every image is resized again on its first view.
       max_memory_restart: "512M",
       autorestart: true,
     },

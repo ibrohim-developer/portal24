@@ -11,6 +11,7 @@ import { strings } from "@/lib/strings";
 
 export async function SiteHeader() {
   const items = navItems(await getNewsRepository("api").getCategories());
+  console.log("items", items);
 
   return (
     <header className="border-b border-hairline">

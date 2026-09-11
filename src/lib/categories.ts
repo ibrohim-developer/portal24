@@ -104,13 +104,3 @@ export function categoryTint(slug: string): string {
   if (slug in CATEGORY_TINT) return CATEGORY_TINT[slug as CategorySlug];
   return CMS_CATEGORY_TINT[slug] ?? FALLBACK_TINT;
 }
-
-/**
- * The 2x2 topic grid on the About Us page (Figma 2196:16591), in its order.
- *
- * Four topics, not five - the design leaves sport out of this grid, so this is
- * deliberately not derived from NAV_ITEMS.
- */
-export const ABOUT_FOCUS_TOPICS = ["eco", "education", "tech", "finance"] as const;
-
-export type AboutFocusTopic = (typeof ABOUT_FOCUS_TOPICS)[number];

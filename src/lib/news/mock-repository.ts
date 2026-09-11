@@ -428,6 +428,16 @@ export const mockNewsRepository: NewsRepository = {
     return buildArticles().map((a) => a.slug);
   },
 
+  async getAllArticles() {
+    return buildArticles();
+  },
+
+  async getPublishedSince(since) {
+    return buildArticles().filter(
+      (a) => Date.parse(a.publishedAt) >= since.getTime(),
+    );
+  },
+
   async getRelated(slug, limit) {
     return buildArticles()
       .filter((a) => a.slug !== slug)

@@ -58,6 +58,17 @@ export interface NewsRepository {
    * whole list up front - there is no server left to handle a miss at runtime.
    */
   getSlugs(): Promise<string[]>;
+  /**
+   * Every article the source publishes, newest first and one per slug: the
+   * whole archive, not the recent run `getSlugs` prebuilds. Only the sitemap
+   * needs it, to point crawlers at stories no page links to any more.
+   */
+  getAllArticles(): Promise<Article[]>;
+  /**
+   * Articles published at or after `since`, newest first and one per slug -
+   * for the Google News sitemap, which lists only the last two days.
+   */
+  getPublishedSince(since: Date): Promise<Article[]>;
   /** The "read also" feed under an article, excluding the article itself. */
   getRelated(slug: string, limit: number): Promise<Article[]>;
 

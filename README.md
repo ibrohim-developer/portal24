@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portal24
 
-## Getting Started
+Next.js 16 with ISR (the server re-renders pages in the background), not a static export: it needs a long-running `next start` behind nginx.
 
-First, run the development server:
+## Requirements
+
+- Node.js >= 20.9, pm2, nginx
+- Outbound HTTPS to `api.portal24.uz` at build time and at runtime (the build fails if the API is down)
+- `.next/` writable by the pm2 user
+
+## pm2
+
+[`deploy/ecosystem.config.js`](deploy/ecosystem.config.js). `cwd` is hardcoded to `/var/www/portal24`.
+
+Check: `curl -s -o /dev/null -D - http://127.0.0.1:3000/` returns 200 with `x-nextjs-cache`.
+
+## nginx
+
+[`deploy/nginx.conf`](deploy/nginx.conf):
+
+- HTTP only. Merge the `upstream` and `location` blocks into the existing TLS server block and remove the old SPA `root`/`try_files`.
+- Keep `proxy_buffering off` (streaming) and `proxy_read_timeout 90s`.
+- `next start` binds `0.0.0.0:3000`. Firewall the port.
+
+## Deploy
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git pull && npm ci && npm run build && pm2 reload portal24
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Not zero-downtime. `next build` deletes `.next/` (except `.next/cache/`) while the running server is still using it, and a failed build leaves the site broken until the next successful one. With one fork-mode instance, `reload` is a restart. For zero downtime, build in a separate release directory and switch after success, carrying over `.next/cache/`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+None required for production.
 
-## Learn More
+| Variable               | Default                   | Read at                                  |
+| ---------------------- | ------------------------- | ---------------------------------------- |
+| `PORTAL24_API_URL`     | `https://api.portal24.uz` | build and runtime                        |
+| `NEXT_PUBLIC_SITE_URL` | `https://portal24.uz`     | build only, baked in (rebuild to change) |
 
-To learn more about Next.js, take a look at the following resources:
+For staging, use `.env.production.local` (gitignored, read by both `build` and `start`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cache
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Single instance only: the ISR cache is per process. Scaling out needs a shared `cacheHandler` (e.g. Redis).
+- ISR pages live in `.next/server/app/`, the image cache in `.next/cache/images/` (31-day TTL). Don't wipe `.next/cache/` on deploy.
+- Refresh intervals: `/` 60s, categories 5m, articles 15m (newest 100 prebuilt, the rest on first request), `sitemap-news.xml` 60s, `sitemap.xml` 15m. `/popular/`, `/search/`, `/about/` and `/authors/` only change on deploy.
+- The CMS rate-limits at 120 req/min. 429s are retried 3 times; if a build still fails on one, re-run it.

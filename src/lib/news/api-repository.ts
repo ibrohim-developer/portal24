@@ -13,6 +13,7 @@ import {
 } from "./api/map";
 import { mockNewsRepository } from "./mock-repository";
 import type { NewsRepository } from "./repository";
+import type { Article } from "./types";
 
 /**
  * The admin team's REST API, behind the same interface the fixtures answer.
@@ -46,6 +47,22 @@ const PREBUILT_ARTICLES = 100;
 
 /** How much of the archive the search page carries - see `getSearchIndex`. */
 const SEARCH_INDEX_SIZE = 300;
+
+/**
+ * The first story under each slug, in the order given.
+ *
+ * The CMS does not keep slugs unique: a headline posted twice gets the same
+ * slug both times, and a slug is one page. Anything listing pages rather than
+ * stories has to name each slug once.
+ */
+function onePerSlug(articles: Article[]): Article[] {
+  const seen = new Set<string>();
+  return articles.filter(({ slug }) => {
+    if (seen.has(slug)) return false;
+    seen.add(slug);
+    return true;
+  });
+}
 
 export const apiNewsRepository: NewsRepository = {
   async getCategories() {
@@ -97,6 +114,36 @@ export const apiNewsRepository: NewsRepository = {
     // first request and is cached from then on.
     const recent = await fetchNewsUpTo(PREBUILT_ARTICLES);
     return recent.map((article) => article.slug);
+  },
+
+  async getAllArticles() {
+    // Walks every page of `/news`, one request per hundred stories. Only the
+    // sitemap calls this, and it regenerates on its own timer, so the cost
+    // lands once per interval rather than once per reader.
+    const archive = await fetchNewsUpTo(Number.POSITIVE_INFINITY);
+    return onePerSlug(archive.map(mapArticle));
+  },
+
+  async getPublishedSince(since) {
+    const recent: Article[] = [];
+
+    // `/news` answers newest first, so the walk ends at the first story older
+    // than `since` - a single request on any ordinary day.
+    for (let page = 1; ; page += 1) {
+      const result = await fetchNewsPage({ page, size: 100 });
+
+      for (const article of result.data.map(mapArticle)) {
+        // No date to test and none to list: `parseApiDate` gives "" for a
+        // stamp it cannot read.
+        if (!article.publishedAt) continue;
+        if (new Date(article.publishedAt) < since) return onePerSlug(recent);
+        recent.push(article);
+      }
+
+      if (!result.hasNextPage || result.data.length === 0) {
+        return onePerSlug(recent);
+      }
+    }
   },
 
   async getSearchIndex() {

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArticleBody } from "@/components/article/article-body";
 import { ArticleFigure } from "@/components/article/article-figure";
 import { ArticleHead } from "@/components/article/article-head";
+import { ArticleJsonLd } from "@/components/article/article-json-ld";
 import { AuthorBlock } from "@/components/article/author-block";
 import { RelatedBlock } from "@/components/article/related-block";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -80,6 +81,8 @@ export default async function ArticlePage({ params }: ArticleParams) {
 
   return (
     <>
+      <ArticleJsonLd article={article} />
+
       {/* Leaderboard above the nav, as on the main page (Figma 1852:18394). */}
       <Container bleed className="pb-gutter">
         <AdsSlot

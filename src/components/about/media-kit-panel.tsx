@@ -18,7 +18,7 @@ export function MediaKitPanel({
         className,
       )}
     >
-      <h2 className="text-title-lg font-medium text-white">{title}</h2>
+      <h2 className="text-title-lg font-medium text-white lg:text-title-sm">{title}</h2>
 
       <dl className="flex flex-col gap-5">
         {items.map((item) => (
